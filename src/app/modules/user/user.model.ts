@@ -18,12 +18,11 @@ const userSchema = new Schema<IUser>(
     role: {
       type: String,
       enum: Object.values(Role),
-      required: true,
     },
     status: {
       type: String,
       enum: Object.values(Status),
-      required: true,
+      default: Status.IN_PROGRESS,
     },
     isDeleted: {
       type: Boolean,

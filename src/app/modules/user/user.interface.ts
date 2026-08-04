@@ -1,12 +1,12 @@
 export enum Role {
-  admin = "admin",
-  student = "student",
-  faculty = "faculty",
+  ADMIN = "admin",
+  STUDENT = "student",
+  FACULTY = "faculty",
 }
 
 export enum Status {
-  in_progress = "in-progress",
-  block = "blocked",
+  IN_PROGRESS = "in-progress",
+  BLOCKED = "blocked",
 }
 
 export interface IUser {
