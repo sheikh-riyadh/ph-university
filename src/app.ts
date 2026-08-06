@@ -1,7 +1,8 @@
 import express from "express";
-import type { Application, Request, Response } from "express";
+import type { Application } from "express";
 import cors from "cors";
 import { userRoutes } from "./app/modules/user/user.route";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 export const app: Application = express();
 
@@ -12,6 +13,5 @@ app.use(cors());
 // Application routes
 app.use("/api/v1/user", userRoutes);
 
-app.get("/", async (req: Request, res: Response) => {
-  res.send(`Welcome to ph university`);
-});
+// Global error handling start from herer
+app.use(globalErrorHandler);

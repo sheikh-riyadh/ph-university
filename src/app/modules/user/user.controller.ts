@@ -1,7 +1,7 @@
-import type { Response, Request } from "express";
+import type { Response, Request, NextFunction } from "express";
 import { userServices } from "./user.service";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const { password, student } = req.body;
 
   try {
@@ -12,10 +12,7 @@ const createUser = async (req: Request, res: Response) => {
       data: user,
     });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Somenting went wrong",
-    });
+    next(error);
   }
 };
 

@@ -6,8 +6,6 @@ import type {
   TUserName,
   StudentModelType,
 } from "./student.interface";
-import bcrypt from "bcrypt";
-import config from "../../config";
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -98,10 +96,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
       unique: true,
       ref: "User",
     },
-    password: {
-      type: String,
-      required: true,
-    },
     name: {
       type: userNameSchema,
       required: true,
@@ -158,13 +152,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
     versionKey: false,
   },
 );
-
-studentSchema.pre("save", async function () {
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-});
 
 // Custom static method
 studentSchema.static("isStudentExist", async function (id: string) {
