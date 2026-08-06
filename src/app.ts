@@ -14,7 +14,7 @@ app.use(cors());
 // Application routes
 app.use("/api/v1", router);
 
-// Global error handling start from herer
+// Global error handler
 app.use(globalErrorHandler);
 
 // Not found handler
