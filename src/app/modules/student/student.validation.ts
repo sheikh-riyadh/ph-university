@@ -42,7 +42,7 @@ const zodStudentSchema = z.object({
     student: z.object({
       name: zodUserNameSchema,
       gender: zodStudentGenderSchema,
-      dateOfBirth: z.string(),
+      dateOfBirth: z.date().optional(),
       email: z.email(),
       contactNo: z.string(),
       emergencyContactNo: z.string(),

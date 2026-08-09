@@ -34,7 +34,7 @@ export interface IStudent {
   password: string;
   name: TUserName;
   gender: TStudentGender;
-  dateOfBirth: string;
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
