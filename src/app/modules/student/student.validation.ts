@@ -36,7 +36,7 @@ export const zodBloodGroupSchema = z.enum([
   "O-",
 ]);
 
-const zodStudentSchema = z.object({
+const zodStudentValidationSchema = z.object({
   body: z.object({
     password: z.string(),
     student: z.object({
@@ -56,6 +56,6 @@ const zodStudentSchema = z.object({
   }),
 });
 
-export const zodStudentValidationSchema = {
-  zodStudentSchema,
+export const studentValidations = {
+  zodStudentValidationSchema,
 };

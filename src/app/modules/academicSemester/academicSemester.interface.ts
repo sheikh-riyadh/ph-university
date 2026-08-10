@@ -27,8 +27,12 @@ export enum Code {
 
 export interface IAcademicSemester {
   name: Name;
-  year: Date;
+  year: string;
   code: Code;
   startMonth: Month;
   endMonth: Month;
+}
+
+export interface IAcademicSemesterNameCodeMapper {
+  [key: string]: string;
 }
