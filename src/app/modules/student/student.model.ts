@@ -145,6 +145,10 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
     profileImage: {
       type: String,
     },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicSemester",
+    },
   },
   {
     timestamps: true,
