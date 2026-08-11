@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import {
-  Code,
-  Month,
+  Codes,
+  Months,
   Name,
   type IAcademicSemester,
 } from "./academicSemester.interface";
@@ -19,17 +19,17 @@ const academicSemesterSchema = new Schema<IAcademicSemester>(
     },
     code: {
       type: String,
-      enum: Object.values(Code),
+      enum: Object.values(Codes),
       required: true,
     },
     startMonth: {
       type: String,
-      enum: Object.values(Month),
+      enum: Object.values(Months),
       required: true,
     },
     endMonth: {
       type: String,
-      enum: Object.values(Month),
+      enum: Object.values(Months),
       required: true,
     },
   },

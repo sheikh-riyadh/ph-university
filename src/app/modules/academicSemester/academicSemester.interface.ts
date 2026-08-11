@@ -1,4 +1,4 @@
-export enum Month {
+export enum Months {
   JANUARY = "January",
   FEBRUARY = "February",
   MARCH = "March",
@@ -19,7 +19,7 @@ export enum Name {
   FALL = "Fall",
 }
 
-export enum Code {
+export enum Codes {
   "01" = "01",
   "02" = "02",
   "03" = "03",
@@ -28,9 +28,9 @@ export enum Code {
 export interface IAcademicSemester {
   name: Name;
   year: string;
-  code: Code;
-  startMonth: Month;
-  endMonth: Month;
+  code: Codes;
+  startMonth: Months;
+  endMonth: Months;
 }
 
 export interface IAcademicSemesterNameCodeMapper {
