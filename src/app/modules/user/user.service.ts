@@ -18,7 +18,7 @@ const createStudentIntoDB = async (password: string, studentData: IStudent) => {
   const userData: Partial<IUser> = {
     password: password || (config.default_pass as string),
     role: Role.STUDENT,
-    id: generateStudentID(academicSemester),
+    id: await generateStudentID(academicSemester),
   };
   const newUser = await User.create(userData);
 

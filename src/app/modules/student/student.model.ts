@@ -116,7 +116,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
     contactNo: {
       type: String,
       required: true,
-      unique: true,
     },
     emergencyContactNo: {
       type: String,
