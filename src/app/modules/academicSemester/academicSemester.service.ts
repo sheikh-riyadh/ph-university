@@ -2,13 +2,11 @@ import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
 import type { IAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 
-const createAcademicSemesterIntoDB = async (
-  academicData: IAcademicSemester,
-) => {
-  if (academicSemesterNameCodeMapper[academicData.name] !== academicData.code) {
+const createAcademicSemesterIntoDB = async (payload: IAcademicSemester) => {
+  if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
     throw new Error("Invalid semester code");
   }
-  const result = await AcademicSemester.create(academicData);
+  const result = await AcademicSemester.create(payload);
   return result;
 };
 
@@ -24,7 +22,7 @@ const getSingleAcademicSemesterFromDB = async (id: string) => {
 
 const updateAcademicSemesterFromDB = async (
   id: string,
-  academicData: Partial<IAcademicSemester>,
+  payload: Partial<IAcademicSemester>,
 ) => {
   const existingSemester = await AcademicSemester.findById(id);
 
@@ -32,14 +30,14 @@ const updateAcademicSemesterFromDB = async (
     throw new Error("Academic semester not found");
   }
 
-  const name = academicData.name ?? existingSemester.name;
-  const code = academicData.code ?? existingSemester.code;
+  const name = payload.name ?? existingSemester.name;
+  const code = payload.code ?? existingSemester.code;
 
   if (academicSemesterNameCodeMapper[name] !== code) {
     throw new Error("Invalid semester code");
   }
 
-  const result = await AcademicSemester.findByIdAndUpdate(id, academicData, {
+  const result = await AcademicSemester.findByIdAndUpdate(id, payload, {
     new: true,
   });
   return result;

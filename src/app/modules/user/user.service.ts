@@ -6,9 +6,9 @@ import { Role, type IUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentID } from "./user.utils";
 
-const createStudentIntoDB = async (password: string, studentData: IStudent) => {
+const createStudentIntoDB = async (password: string, payload: IStudent) => {
   const academicSemester = await AcademicSemester.findById(
-    studentData.admissionSemester,
+    payload.admissionSemester,
   );
 
   if (!academicSemester) {
@@ -23,10 +23,10 @@ const createStudentIntoDB = async (password: string, studentData: IStudent) => {
   const newUser = await User.create(userData);
 
   if (Object.keys(newUser).length) {
-    studentData.id = newUser.id;
-    studentData.user = newUser._id;
+    payload.id = newUser.id;
+    payload.user = newUser._id;
 
-    const newStudent = await Student.create(studentData);
+    const newStudent = await Student.create(payload);
     return newStudent;
   }
 };
