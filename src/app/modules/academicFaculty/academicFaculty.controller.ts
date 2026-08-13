@@ -2,7 +2,9 @@ import { catchAsync } from "../../utils/catchAsync";
 import { academicFacultyServices } from "./academicFaculty.service";
 
 const createAcademicFaculty = catchAsync(async (req, res) => {
-  const result = academicFacultyServices.createAcademicFacultyIntoDB(req.body);
+  const result = await academicFacultyServices.createAcademicFacultyIntoDB(
+    req.body,
+  );
   res.status(201).json({
     success: true,
     message: "Created academic faculty successfully",
