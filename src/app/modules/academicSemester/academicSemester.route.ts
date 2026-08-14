@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   "/create-academic-semester",
   validateRequest(
-    academicSemesterValidations.zodAcademicSemesterValidationSchema,
+    academicSemesterValidations.zodCreateAcademicSemesterValidationSchema,
   ),
   academicSemesterControllers.createAcademicSemester,
 );
@@ -21,7 +21,7 @@ router.get(
 router.patch(
   "/:semesterId",
   validateRequest(
-    academicSemesterValidations.zodAcademicSemesterUpdateValidationSchema,
+    academicSemesterValidations.zodUpdateAcademicSemesterValidationSchema,
   ),
   academicSemesterControllers.updateAcademicSemester,
 );

@@ -31,7 +31,7 @@ const getSingleAcademicFaculty = catchAsync(async (req, res) => {
     success: true,
     message: "Single acadmic faculty retrived successfully",
     data: result,
-  });
+  });j
 });
 
 const updateAcademicFaculty = catchAsync(async (req, res) => {

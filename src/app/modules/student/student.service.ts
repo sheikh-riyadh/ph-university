@@ -21,8 +21,13 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
-const deleteStudentFromDB = async (id: string) => {
-  const result = await Student.findByIdAndDelete(id);
+const updateStudentFromDB = async (
+  studentId: string,
+  payload: Partial<IStudent>,
+) => {
+  const result = await Student.findByIdAndUpdate(studentId, payload, {
+    returnDocument: "after",
+  });
   return result;
 };
 
@@ -30,5 +35,5 @@ export const StudentServices = {
   createStudentIntoDB,
   getAllStudentsFromDB,
   getSingleStudentFromDB,
-  deleteStudentFromDB,
+  updateStudentFromDB,
 };

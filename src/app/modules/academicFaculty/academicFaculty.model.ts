@@ -6,6 +6,7 @@ const academicFacultySchema = new Schema<IAcademicFaculty>(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
   },
   {

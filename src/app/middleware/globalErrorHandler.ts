@@ -6,6 +6,10 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction,
 ) => {
+  if (res.headersSent) {
+    return next(error);
+  }
+
   res.status(500).json({
     success: false,
     message:
@@ -15,5 +19,4 @@ export const globalErrorHandler = (
           ? error.message
           : "Something went wrong!",
   });
-  next(error);
 };
