@@ -12,7 +12,7 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
   );
 
   if (!academicSemester) {
-    throw new Error("Semester not found");
+    throw new Error("Academic semester not found");
   }
 
   const userData: Partial<IUser> = {

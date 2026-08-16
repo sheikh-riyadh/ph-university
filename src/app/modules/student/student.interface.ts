@@ -45,6 +45,7 @@ export interface IStudent {
   localGuardian: TLocalGuardian;
   profileImage?: string;
   admissionSemester: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
 }
 
 export interface StudentModelType extends Model<IStudent> {

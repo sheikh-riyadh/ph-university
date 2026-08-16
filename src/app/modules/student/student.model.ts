@@ -6,6 +6,8 @@ import type {
   TUserName,
   StudentModelType,
 } from "./student.interface";
+import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
+import { AcademicSemester } from "../academicSemester/academicSemester.model";
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -148,6 +150,10 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
       type: Schema.Types.ObjectId,
       ref: "AcademicSemester",
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicDepartment",
+    },
   },
   {
     timestamps: true,
@@ -159,6 +165,51 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
 studentSchema.static("isStudentExist", async function (id: string) {
   const studentExists = await this.exists({ id });
   return studentExists;
+});
+
+studentSchema.pre("save", async function () {
+  const isAcademicDepartmentExists = await AcademicDepartment.exists({
+    _id: this.academicDepartment,
+  });
+
+  if (!isAcademicDepartmentExists) {
+    throw new Error("Academic department not found!");
+  }
+});
+
+studentSchema.pre("findOneAndUpdate", async function () {
+  const query = this.getQuery();
+  const payload = this.getUpdate() as Partial<IStudent>;
+
+  const student = await Student.findById(query);
+
+  if (!student) {
+    throw new Error("Student not found!");
+  }
+
+  const academicDepartment =
+    payload?.academicDepartment ?? student.academicDepartment;
+
+  const academicSemester =
+    payload.admissionSemester ?? student.admissionSemester;
+
+  const isAcademicDepartmentExists = await AcademicDepartment.exists({
+    _id: academicDepartment,
+  });
+
+  const isAcademicSemesterExists = await AcademicSemester.exists({
+    _id: academicSemester,
+  });
+
+  if (!isAcademicSemesterExists) {
+    throw new Error("Admission semester not found!");
+  }
+
+  if (!isAcademicDepartmentExists) {
+    throw new Error("Academic department not found!");
+  }
+
+  // const isAcademicDepartmentExists = await AcademicDepartment.findById();
 });
 
 export const Student = model<IStudent, StudentModelType>(

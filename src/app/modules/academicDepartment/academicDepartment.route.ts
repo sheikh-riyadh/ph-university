@@ -25,6 +25,7 @@ router.patch(
   validateRequest(
     academicDepartmentValidations.zodUpdateAcademicDepartmentValidationSchema,
   ),
+  academicDepartmentControllers.updateAcademicDepartment,
 );
 
 export const academicDepartmentRoutes = router;

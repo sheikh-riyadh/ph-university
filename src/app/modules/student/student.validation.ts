@@ -38,21 +38,20 @@ export const zodBloodGroupSchema = z.enum([
 ]);
 
 const studentValidationSchema = z.object({
-  student: z.object({
-    name: zodUserNameValidationSchema,
-    gender: zodStudentGenderValidationSchema,
-    dateOfBirth: z.string().optional(),
-    email: z.email(),
-    contactNo: z.string(),
-    emergencyContactNo: z.string(),
-    bloodGroup: zodBloodGroupSchema,
-    presentAddress: z.string(),
-    permanentAddress: z.string(),
-    guardian: zodGuardianValidationSchema,
-    localGuardian: zodLocalGuardianValidationSchema,
-    admissionSemester: z.string(),
-    profileImage: z.string(),
-  }),
+  name: zodUserNameValidationSchema,
+  gender: zodStudentGenderValidationSchema,
+  dateOfBirth: z.string().optional(),
+  email: z.email(),
+  contactNo: z.string(),
+  emergencyContactNo: z.string(),
+  bloodGroup: zodBloodGroupSchema,
+  presentAddress: z.string(),
+  permanentAddress: z.string(),
+  guardian: zodGuardianValidationSchema,
+  localGuardian: zodLocalGuardianValidationSchema,
+  admissionSemester: z.string(),
+  academicDepartment: z.string(),
+  profileImage: z.string(),
 });
 
 const zodCreateStudentValidationSchema = z.object({
