@@ -48,6 +48,11 @@ export interface IStudent {
   academicDepartment: Types.ObjectId;
 }
 
+export interface IStudentCounter {
+  key: string;
+  sequence: number;
+}
+
 export interface StudentModelType extends Model<IStudent> {
   isStudentExist(id: string): Promise<boolean | null>;
 }

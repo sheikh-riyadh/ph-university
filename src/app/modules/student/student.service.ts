@@ -1,3 +1,4 @@
+import { AppError } from "../../error/appError";
 import type { IStudent } from "./student.interface";
 import { Student } from "./student.model";
 
@@ -7,7 +8,7 @@ const createStudentIntoDB = async (payload: IStudent) => {
     const result = await Student.create(payload);
     return result;
   } else {
-    throw new Error("User already exists");
+    throw new AppError(409, "User already exists");
   }
 };
 

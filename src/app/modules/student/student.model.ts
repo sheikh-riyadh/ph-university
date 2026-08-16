@@ -5,9 +5,11 @@ import type {
   IStudent,
   TUserName,
   StudentModelType,
+  IStudentCounter,
 } from "./student.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
+import { AppError } from "../../error/appError";
 
 const userNameSchema = new Schema<TUserName>(
   {
@@ -85,6 +87,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
   },
 );
 
+// Student schema
 const studentSchema = new Schema<IStudent, StudentModelType>(
   {
     id: {
@@ -161,6 +164,26 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
   },
 );
 
+// Student counter schema
+const studentCounterSchema = new Schema<IStudentCounter>(
+  {
+    key: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    sequence: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
 // Custom static method
 studentSchema.static("isStudentExist", async function (id: string) {
   const studentExists = await this.exists({ id });
@@ -173,7 +196,7 @@ studentSchema.pre("save", async function () {
   });
 
   if (!isAcademicDepartmentExists) {
-    throw new Error("Academic department not found!");
+    throw new AppError(404, "Academic department not found!");
   }
 });
 
@@ -184,7 +207,7 @@ studentSchema.pre("findOneAndUpdate", async function () {
   const student = await Student.findById(query);
 
   if (!student) {
-    throw new Error("Student not found!");
+    throw new AppError(404, "Student not found!");
   }
 
   const academicDepartment =
@@ -202,11 +225,11 @@ studentSchema.pre("findOneAndUpdate", async function () {
   });
 
   if (!isAcademicSemesterExists) {
-    throw new Error("Admission semester not found!");
+    throw new AppError(404, "Admission semester not found!");
   }
 
   if (!isAcademicDepartmentExists) {
-    throw new Error("Academic department not found!");
+    throw new AppError(404, "Academic department not found!");
   }
 
   // const isAcademicDepartmentExists = await AcademicDepartment.findById();
@@ -215,4 +238,9 @@ studentSchema.pre("findOneAndUpdate", async function () {
 export const Student = model<IStudent, StudentModelType>(
   "Student",
   studentSchema,
+);
+
+export const StudentCounter = model<IStudentCounter>(
+  "StudentCounter",
+  studentCounterSchema,
 );

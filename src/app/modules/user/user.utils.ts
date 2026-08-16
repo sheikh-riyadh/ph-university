@@ -1,45 +1,34 @@
+import type { ClientSession } from "mongoose";
 import type { IAcademicSemester } from "../academicSemester/academicSemester.interface";
-import { Role } from "./user.interface";
-import { User } from "./user.model";
-
-const findLastStudentID = async (): Promise<string | undefined> => {
-  const lastStudent = await User.findOne(
-    {
-      role: Role.STUDENT,
-    },
-    {
-      id: 1,
-      _id: 0,
-    },
-  )
-    .sort({
-      createdAt: -1,
-    })
-    .lean();
-
-  return lastStudent?.id ? lastStudent.id : undefined;
-};
+import { StudentCounter } from "../student/student.model";
 
 export const generateStudentID = async (
   academicSemester: IAcademicSemester,
+  session: ClientSession,
 ): Promise<string> => {
-  let currentId: number = 0;
+  const counterKey = `${academicSemester.year}${academicSemester.code}`;
 
-  const lastStudentID = await findLastStudentID();
+  const counter = await StudentCounter.findOneAndUpdate(
+    {
+      key: counterKey,
+    },
+    {
+      $inc: {
+        sequence: 1,
+      },
+    },
+    {
+      new: true,
+      upsert: true,
+      session,
+    },
+  );
 
-  const lastStudentSemesterCode = lastStudentID?.substring(4, 6);
-  const lastStudentSemesterYear = lastStudentID?.substring(0, 4);
-
-  const currentSemesterCode = academicSemester.code;
-  const currentSemesterYear = academicSemester.year;
-
-  if (
-    lastStudentID &&
-    lastStudentSemesterCode === currentSemesterCode &&
-    lastStudentSemesterYear === currentSemesterYear
-  ) {
-    currentId = Number(lastStudentID.substring(6));
+  if (!counter) {
+    throw new Error("Failed to generate student ID");
   }
-  const studentId = (currentId + 1).toString().padStart(4, "0");
-  return `${academicSemester.year}${academicSemester.code}${studentId}`;
+
+  const sequence = counter.sequence.toString().padStart(4, "0");
+
+  return `${counterKey}${sequence}`;
 };

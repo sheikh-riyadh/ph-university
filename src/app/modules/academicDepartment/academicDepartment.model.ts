@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import type { IAcademicDepartment } from "./academicDepartment.interface";
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
+import { AppError } from "../../error/appError";
 
 const academicDepartmentSchema = new Schema<IAcademicDepartment>(
   {
@@ -24,7 +25,7 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
 academicDepartmentSchema.pre("save", async function () {
   const isExists = await AcademicFaculty.exists({ _id: this.academicFaculty });
   if (!isExists) {
-    throw new Error("Academic faculty not found!");
+    throw new AppError(404, "Academic faculty not found!");
   }
 });
 
@@ -35,7 +36,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
   const department = await this.model.findOne(query);
 
   if (!department) {
-    throw new Error("Academic department not found !");
+    throw new AppError(404, "Academic department not found !");
   }
 
   const academicFaculty = payload.academicFaculty ?? department.academicFaculty;
@@ -45,7 +46,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
   });
 
   if (!isFacultyExists) {
-    throw new Error("Academic faculty not found !");
+    throw new AppError(404, "Academic faculty not found !");
   }
 });
 
