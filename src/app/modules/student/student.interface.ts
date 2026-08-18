@@ -46,6 +46,7 @@ export interface IStudent {
   profileImage?: string;
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
+  isDeleted: boolean;
 }
 
 export interface IStudentCounter {

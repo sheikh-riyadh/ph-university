@@ -2,6 +2,21 @@ import type { ClientSession } from "mongoose";
 import type { IAcademicSemester } from "../academicSemester/academicSemester.interface";
 import { StudentCounter } from "../student/student.model";
 
+/* 
+
+
+{
+  "name": "Summer",
+  "year": "2026",
+  "code": "02",
+  "startMonth": "January",
+  "endMonth": "April",
+}
+
+
+
+*/
+
 export const generateStudentID = async (
   academicSemester: IAcademicSemester,
   session: ClientSession,
@@ -19,7 +34,6 @@ export const generateStudentID = async (
     },
     {
       new: true,
-      upsert: true,
       session,
     },
   );
