@@ -208,7 +208,7 @@ studentSchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
   const payload = this.getUpdate() as Partial<IStudent>;
 
-  const student = await Student.findById(query);
+  const student = await Student.findOne(query);
 
   if (!student) {
     throw new AppError(404, "Student not found!");

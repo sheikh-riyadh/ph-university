@@ -42,9 +42,37 @@ const updateStudentFromDB = async (
   studentId: string,
   payload: Partial<IStudent>,
 ) => {
-  const result = await Student.findByIdAndUpdate(studentId, payload, {
-    returnDocument: "after",
-  });
+  const { name, localGuardian, guardian, ...remainingStudentData } = payload;
+
+  const modifiedUpdateData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+
+  if (name) {
+    Object.entries(name).forEach(([key, value]) => {
+      modifiedUpdateData[`name.${key}`] = value;
+    });
+  }
+
+  if (localGuardian) {
+    Object.entries(localGuardian).forEach(([key, value]) => {
+      modifiedUpdateData[`localGuardian.${key}`] = value;
+    });
+  }
+
+  if (guardian) {
+    Object.entries(guardian).forEach(([key, value]) => {
+      modifiedUpdateData[`guardian.${key}`] = value;
+    });
+  }
+
+  const result = await Student.findByIdAndUpdate(
+    studentId,
+    modifiedUpdateData,
+    {
+      returnDocument: "after",
+    },
+  );
   return result;
 };
 
@@ -66,14 +94,11 @@ const deleteStudentFromDB = async (id: string) => {
     if (!deletedUser) {
       throw new AppError(400, "User not found or already deleted");
     }
-    console.log("ID BEFORE QUERY:", id);
     const deletedStudent = await Student.findOneAndUpdate(
       { id },
       { isDeleted: true },
       { returnDocument: "after", session },
     );
-
-    console.log("DELETED STUDENT:", deletedStudent);
 
     if (!deletedStudent) {
       throw new AppError(400, "Student not found or already deleted");
