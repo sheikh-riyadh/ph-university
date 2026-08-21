@@ -1,7 +1,9 @@
 import type { Error } from "mongoose";
-import type { TErrorSource } from "../interface/error";
+import type { TErrorSource, TGenericErrorResponse } from "../interface/error";
 
-export const handleMongooseValidationError = (error: Error.ValidationError) => {
+export const handleMongooseValidationError = (
+  error: Error.ValidationError,
+): TGenericErrorResponse => {
   const errorSources: TErrorSource = Object.values(error.errors).map(
     (value: Error.ValidatorError | Error.CastError) => {
       return {
@@ -14,7 +16,7 @@ export const handleMongooseValidationError = (error: Error.ValidationError) => {
 
   return {
     statusCode,
-    message: "Hello Bangladesh",
+    message: error.name,
     errorSources,
   };
 };
