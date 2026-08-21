@@ -49,6 +49,17 @@ export interface IStudent {
   isDeleted: boolean;
 }
 
+export interface IStudentQuery {
+  search: string;
+  email: string;
+  gender: TStudentGender;
+  bloodGroup: TBloodGroup;
+  sort: string;
+  limit: number;
+  page: number;
+  fields: string;
+}
+
 export interface IStudentCounter {
   key: string;
   sequence: number;

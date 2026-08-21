@@ -5,7 +5,11 @@ import { studentValidations } from "./student.validation";
 const router = express.Router();
 
 // Will call controller function
-router.get("/", StudentControllers.getAllStudents);
+router.get(
+  "/",
+  validateRequest(studentValidations.zodStudentQueryValidationSchema),
+  StudentControllers.getAllStudents,
+);
 router.get("/:studentId", StudentControllers.getSingleStudent);
 router.patch(
   "/:studentId",

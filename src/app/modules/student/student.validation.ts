@@ -71,7 +71,21 @@ const zodUpdateStudentValidationSchema = z.object({
   }),
 });
 
+const zodStudentQueryValidationSchema = z.object({
+  query: z.object({
+    search: z.string().trim().min(1).max(100).optional(),
+    email: z.email().optional(),
+    fields: z.string().optional(),
+    bloodGroup: zodBloodGroupSchema.optional(),
+    gender: zodStudentGenderValidationSchema.optional(),
+    sort: z.string().default("-createdAt"),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    page: z.coerce.number().int().min(1).default(1),
+  }),
+});
+
 export const studentValidations = {
   zodCreateStudentValidationSchema,
   zodUpdateStudentValidationSchema,
+  zodStudentQueryValidationSchema,
 };
