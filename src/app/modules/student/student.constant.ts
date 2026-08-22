@@ -14,6 +14,7 @@ export const excludedFields = [
   "page",
   "skip",
   "fields",
+  "password",
 ];
 
 export const allowedFilterFields = [

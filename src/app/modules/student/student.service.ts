@@ -8,6 +8,7 @@ import {
   allowedSearchableFields,
   excludedFields,
 } from "./student.constant";
+import { QueryBuilder } from "../../builder/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
   const isExist = await Student.isStudentExist(payload.id);
@@ -20,77 +21,16 @@ const createStudentIntoDB = async (payload: IStudent) => {
 };
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  const { search } = query;
+  const studentQuery = new QueryBuilder(Student.find(), query)
+    .search(allowedSearchableFields)
+    .filter(allowedFilterFields, excludedFields)
+    .sort()
+    .paginate()
+    .fields();
 
-  const filter: Record<string, unknown> = {
-    isDeleted: false,
-  };
+  const result = await studentQuery.modelQuery;
 
-  if (typeof search === "string" && search.trim() && search.length <= 100) {
-    filter.$or = allowedSearchableFields.map((field) => ({
-      [field]: {
-        $regex: search.trim(),
-        $options: "i",
-      },
-    }));
-  }
-
-  const partialSearch = Student.find(filter);
-
-  const newQuery: Record<string, unknown> = {};
-
-  allowedFilterFields.forEach((field) => {
-    if (query[field] !== undefined) {
-      newQuery[field] = query[field];
-    }
-  });
-
-  excludedFields.forEach((element) => delete newQuery[element]);
-
-  const partialAndExactSearchResult = partialSearch
-    .find(newQuery)
-    .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
-
-  let sort = "-createdAt";
-
-  if (query?.sort) {
-    sort = query.sort as string;
-  }
-
-  const sortedResult = partialAndExactSearchResult.sort(sort);
-
-  let limit = 10,
-    page = 1,
-    skip = 0;
-
-  if (query?.limit) {
-    limit = Number(query.limit);
-  }
-
-  if (query.page) {
-    page = Number(query.page);
-    skip = (page - 1) * limit;
-  }
-
-  const paginedResult = sortedResult.skip(skip);
-
-  const limitedResult = paginedResult.limit(limit);
-
-  let fields = "";
-
-  if (query.fields) {
-    fields = (query.fields as string).split(",").join(" ");
-  }
-
-  const fieldsResult = await limitedResult.select(fields);
-
-  return fieldsResult;
+  return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {

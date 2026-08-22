@@ -3,16 +3,10 @@ import type { Query } from "mongoose";
 export class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
   public query: Record<string, unknown>;
-  public newQuery: Record<string, unknown>;
 
-  constructor(
-    modelQuery: Query<T[], T>,
-    query: Record<string, unknown>,
-    newQuery: Record<string, unknown>,
-  ) {
+  constructor(modelQuery: Query<T[], T>, query: Record<string, unknown>) {
     this.modelQuery = modelQuery;
     this.query = query;
-    this.newQuery = newQuery;
   }
 
   search(allowedSearchableFields: Array<string>) {
@@ -23,7 +17,10 @@ export class QueryBuilder<T> {
     ) {
       this.modelQuery = this.modelQuery.find({
         $or: allowedSearchableFields.map((field) => ({
-          [field]: { regex: this.query.search, $options: "i" },
+          [field]: {
+            $regex: (this?.query?.search as string).trim(),
+            $options: "i",
+          },
         })),
       });
     }
@@ -31,13 +28,25 @@ export class QueryBuilder<T> {
   }
 
   filter(allowedFilterFields: Array<string>, excludedFields: Array<string>) {
+    const newQuery: Record<string, unknown> = {
+      isDeleted: false,
+    };
+
     allowedFilterFields.forEach((field) => {
-      if (this.query[field] !== undefined) {
-        this.newQuery[field] = this.query[field];
+      if (this?.query[field] !== undefined) {
+        newQuery[field] = this?.query[field];
       }
     });
-    excludedFields.forEach((element) => delete this.newQuery[element]);
-    this.modelQuery = this.modelQuery.find(this.newQuery);
+    excludedFields.forEach((element) => delete newQuery[element]);
+    this.modelQuery = this.modelQuery
+      .find(newQuery)
+      .populate("admissionSemester")
+      .populate({
+        path: "academicDepartment",
+        populate: {
+          path: "academicFaculty",
+        },
+      });
 
     return this;
   }
@@ -59,7 +68,7 @@ export class QueryBuilder<T> {
   }
 
   fields() {
-    const fields = (this?.query?.fields as string).split(",").join(" ") || "";
+    const fields = (this?.query?.fields as string)?.split(",")?.join(" ");
     this.modelQuery = this.modelQuery.select(fields);
     return this;
   }
