@@ -1,5 +1,5 @@
 import type { Error } from "mongoose";
-import type { TGenericErrorResponse } from "../interface/error";
+import type { TGenericErrorResponse } from "../interfaces/error";
 
 export const handleCastError = (
   error: Error.CastError,

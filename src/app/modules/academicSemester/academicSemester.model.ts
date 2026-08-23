@@ -5,7 +5,7 @@ import {
   Name,
   type IAcademicSemester,
 } from "./academicSemester.interface";
-import { AppError } from "../../error/appError";
+import { AppError } from "../../errors/appError";
 
 const academicSemesterSchema = new Schema<IAcademicSemester>(
   {

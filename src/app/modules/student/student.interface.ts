@@ -1,10 +1,5 @@
 import type { Model, Types } from "mongoose";
-
-export type TUserName = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-};
+import type { Gender, IBaseUser } from "../../interfaces/common.interface";
 
 export type TGuardian = {
   fatherName: string;
@@ -15,8 +10,6 @@ export type TGuardian = {
   motherContactNo: string;
 };
 
-export type TStudentGender = "male" | "female";
-
 export type TLocalGuardian = {
   name: string;
   occupation: string;
@@ -24,36 +17,31 @@ export type TLocalGuardian = {
   address: string;
 };
 
-export type TBloodGroup = Array<
-  "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-"
->;
+export enum BloodGroup {
+  A_POSITIVE = "A+",
+  A_NEGATIVE = "A-",
+  B_POSITIVE = "B+",
+  B_NEGATIVE = "B-",
+  AB_POSITIVE = "AB+",
+  AB_NEGATIVE = "AB-",
+  O_POSITIVE = "O+",
+  O_NEGATIVE = "O-",
+}
 
-export interface IStudent {
-  id: string;
-  user: Types.ObjectId;
+export interface IStudent extends IBaseUser {
   password: string;
-  name: TUserName;
-  gender: TStudentGender;
-  dateOfBirth?: Date;
-  email: string;
-  contactNo: string;
-  emergencyContactNo: string;
-  bloodGroup?: TBloodGroup;
-  presentAddress: string;
-  permanentAddress: string;
+  bloodGroup?: BloodGroup;
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
-  profileImage?: string;
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
-  isDeleted: boolean;
 }
 
 export interface IStudentQuery {
   search: string;
   email: string;
-  gender: TStudentGender;
-  bloodGroup: TBloodGroup;
+  gender: Gender;
+  bloodGroup: BloodGroup;
   sort: string;
   limit: number;
   page: number;

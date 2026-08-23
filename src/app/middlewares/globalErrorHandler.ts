@@ -1,13 +1,13 @@
 import type { ErrorRequestHandler } from "express";
-import type { TErrorSource } from "../interface/error";
+import type { TErrorSource } from "../interfaces/error";
 import { ZodError } from "zod";
 import config from "../config";
-import { zodErrorHandler } from "../error/handleZodError";
-import { handleMongooseValidationError } from "../error/handleMongooseValidationError";
+import { zodErrorHandler } from "../errors/handleZodError";
+import { handleMongooseValidationError } from "../errors/handleMongooseValidationError";
 import { Error } from "mongoose";
-import { handleCastError } from "../error/handleCastError";
-import { handleDuplicateError } from "../error/handleDuplicateError";
-import { AppError } from "../error/appError";
+import { handleCastError } from "../errors/handleCastError";
+import { handleDuplicateError } from "../errors/handleDuplicateError";
+import { AppError } from "../errors/appError";
 
 export const globalErrorHandler: ErrorRequestHandler = (
   error,

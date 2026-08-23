@@ -1,35 +1,16 @@
 import { model, Schema } from "mongoose";
-import type {
-  TGuardian,
-  TLocalGuardian,
-  IStudent,
-  TUserName,
-  StudentModelType,
-  IStudentCounter,
+import {
+  type TGuardian,
+  type TLocalGuardian,
+  type IStudent,
+  type StudentModelType,
+  type IStudentCounter,
+  BloodGroup,
 } from "./student.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
-import { AppError } from "../../error/appError";
-
-const userNameSchema = new Schema<TUserName>(
-  {
-    firstName: {
-      type: String,
-      required: true,
-    },
-    middleName: {
-      type: String,
-      required: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    _id: false,
-  },
-);
+import { AppError } from "../../errors/appError";
+import { basePersonSchema } from "../../schemas/common.schema";
 
 const guardianSchema = new Schema<TGuardian>(
   {
@@ -90,53 +71,10 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 // Student schema
 const studentSchema = new Schema<IStudent, StudentModelType>(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      unique: true,
-      ref: "User",
-    },
-    name: {
-      type: userNameSchema,
-      required: true,
-    },
-    gender: {
-      type: String,
-      required: true,
-      enum: ["male", "female"],
-    },
-    dateOfBirth: {
-      type: Date,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    contactNo: {
-      type: String,
-      required: true,
-    },
-    emergencyContactNo: {
-      type: String,
-      required: true,
-    },
+    ...basePersonSchema,
     bloodGroup: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-    },
-    presentAddress: {
-      type: String,
-      required: true,
-    },
-    permanentAddress: {
-      type: String,
-      required: true,
+      enum: Object.values(BloodGroup),
     },
     guardian: {
       type: guardianSchema,
@@ -146,9 +84,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
       type: localGuardianSchema,
       required: true,
     },
-    profileImage: {
-      type: String,
-    },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: "AcademicSemester",
@@ -156,10 +91,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
     academicDepartment: {
       type: Schema.Types.ObjectId,
       ref: "AcademicDepartment",
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
     },
   },
   {

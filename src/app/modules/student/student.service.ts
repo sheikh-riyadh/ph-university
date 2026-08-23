@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { AppError } from "../../error/appError";
+import { AppError } from "../../errors/appError";
 import type { IStudent } from "./student.interface";
 import { Student } from "./student.model";
 import { User } from "../user/user.model";
@@ -8,7 +8,7 @@ import {
   allowedSearchableFields,
   excludedFields,
 } from "./student.constant";
-import { QueryBuilder } from "../../builder/QueryBuilder";
+import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
   const isExist = await Student.isStudentExist(payload.id);
@@ -21,7 +21,17 @@ const createStudentIntoDB = async (payload: IStudent) => {
 };
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  const studentQuery = new QueryBuilder(Student.find(), query)
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate("admissionSemester")
+      .populate({
+        path: "academicDepartment",
+        populate: {
+          path: "academicFaculty",
+        },
+      }),
+    query,
+  )
     .search(allowedSearchableFields)
     .filter(allowedFilterFields, excludedFields)
     .sort()

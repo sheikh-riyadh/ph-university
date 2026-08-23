@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import config from "../../config";
-import { AppError } from "../../error/appError";
+import { AppError } from "../../errors/appError";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import type { IStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";

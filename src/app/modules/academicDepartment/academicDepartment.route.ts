@@ -1,5 +1,5 @@
 import express from "express";
-import { validateRequest } from "../../middleware/validateRequest";
+import { validateRequest } from "../../middlewares/validateRequest";
 import { academicDepartmentControllers } from "./academicDepartment.controller";
 import { academicDepartmentValidations } from "./academicDepartment.validation";
 

@@ -38,21 +38,14 @@ export class QueryBuilder<T> {
       }
     });
     excludedFields.forEach((element) => delete newQuery[element]);
-    this.modelQuery = this.modelQuery
-      .find(newQuery)
-      .populate("admissionSemester")
-      .populate({
-        path: "academicDepartment",
-        populate: {
-          path: "academicFaculty",
-        },
-      });
+    this.modelQuery = this.modelQuery.find(newQuery);
 
     return this;
   }
 
   sort() {
-    const sortValue = (this?.query?.sort as string) || "-createdAt";
+    const sortValue =
+      (this?.query?.sort as string)?.split(",")?.join(" ") || "-createdAt";
     this.modelQuery = this.modelQuery.sort(sortValue);
 
     return this;

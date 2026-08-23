@@ -1,10 +1,9 @@
 import z from "zod";
-
-export const zodUserNameValidationSchema = z.object({
-  firstName: z.string(),
-  middleName: z.string(),
-  lastName: z.string(),
-});
+import {
+  personValidationSchema,
+  zodGenderValidationSchema,
+  zodNameValidationSchema,
+} from "../../validations/common.validation";
 
 export const zodGuardianValidationSchema = z.object({
   fatherName: z.string(),
@@ -14,8 +13,6 @@ export const zodGuardianValidationSchema = z.object({
   motherOccupation: z.string(),
   motherContactNo: z.string(),
 });
-
-export const zodStudentGenderValidationSchema = z.enum(["male", "female"]);
 
 export const zodLocalGuardianValidationSchema = z.object({
   name: z.string(),
@@ -36,20 +33,12 @@ export const zodBloodGroupSchema = z.enum([
 ]);
 
 const studentValidationSchema = z.object({
-  name: zodUserNameValidationSchema,
-  gender: zodStudentGenderValidationSchema,
-  dateOfBirth: z.string().optional(),
-  email: z.email(),
-  contactNo: z.string(),
-  emergencyContactNo: z.string(),
+  ...personValidationSchema,
   bloodGroup: zodBloodGroupSchema,
-  presentAddress: z.string(),
-  permanentAddress: z.string(),
   guardian: zodGuardianValidationSchema,
   localGuardian: zodLocalGuardianValidationSchema,
   admissionSemester: z.string(),
   academicDepartment: z.string(),
-  profileImage: z.string(),
 });
 
 const zodCreateStudentValidationSchema = z.object({
@@ -63,7 +52,7 @@ const zodUpdateStudentValidationSchema = z.object({
   body: z.object({
     student: studentValidationSchema
       .extend({
-        name: zodUserNameValidationSchema.partial(),
+        name: zodNameValidationSchema.partial(),
         guardian: zodGuardianValidationSchema.partial(),
         localGuardian: zodLocalGuardianValidationSchema.partial(),
       })
@@ -77,7 +66,7 @@ const zodStudentQueryValidationSchema = z.object({
     email: z.email().optional(),
     fields: z.string().optional(),
     bloodGroup: zodBloodGroupSchema.optional(),
-    gender: zodStudentGenderValidationSchema.optional(),
+    gender: zodGenderValidationSchema.optional(),
     sort: z.string().default("-createdAt"),
     limit: z.coerce.number().int().min(1).max(100).default(10),
     page: z.coerce.number().int().min(1).default(1),

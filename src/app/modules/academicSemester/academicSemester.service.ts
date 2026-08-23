@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { AppError } from "../../error/appError";
+import { AppError } from "../../errors/appError";
 import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
 import type { IAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";

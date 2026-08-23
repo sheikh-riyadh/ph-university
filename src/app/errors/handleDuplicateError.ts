@@ -1,5 +1,5 @@
 import type { MongoServerError } from "mongodb";
-import type { TGenericErrorResponse } from "../interface/error";
+import type { TGenericErrorResponse } from "../interfaces/error";
 
 export const handleDuplicateError = (
   error: MongoServerError,
