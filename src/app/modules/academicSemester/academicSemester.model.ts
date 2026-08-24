@@ -1,9 +1,10 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, type Types } from "mongoose";
 import {
   Codes,
   Months,
   Name,
   type IAcademicSemester,
+  type IAcademicSemesterModelType,
 } from "./academicSemester.interface";
 import { AppError } from "../../errors/appError";
 
@@ -40,6 +41,17 @@ const academicSemesterSchema = new Schema<IAcademicSemester>(
   },
 );
 
+academicSemesterSchema.static(
+  "isAcademicSemesterExists",
+  async function (id: Types.ObjectId) {
+    const academicSemester = await this.findById(id);
+    if (!academicSemester) {
+      throw new AppError(404, "Academic semester not found !");
+    }
+    return academicSemester;
+  },
+);
+
 academicSemesterSchema.pre("save", async function () {
   const isExists = await AcademicSemester.findOne({
     year: this.year,
@@ -51,7 +63,7 @@ academicSemesterSchema.pre("save", async function () {
   }
 });
 
-export const AcademicSemester = model<IAcademicSemester>(
-  "AcademicSemester",
-  academicSemesterSchema,
-);
+export const AcademicSemester = model<
+  IAcademicSemester,
+  IAcademicSemesterModelType
+>("AcademicSemester", academicSemesterSchema);

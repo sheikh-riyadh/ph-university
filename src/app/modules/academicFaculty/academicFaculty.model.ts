@@ -1,5 +1,9 @@
 import { model, Schema } from "mongoose";
-import type { IAcademicFaculty } from "./academicFaculty.interface";
+import type {
+  IAcademicFaculty,
+  IAcademicFacultyModelType,
+} from "./academicFaculty.interface";
+import { AppError } from "../../errors/appError";
 
 const academicFacultySchema = new Schema<IAcademicFaculty>(
   {
@@ -15,7 +19,18 @@ const academicFacultySchema = new Schema<IAcademicFaculty>(
   },
 );
 
-export const AcademicFaculty = model<IAcademicFaculty>(
-  "AcademicFaculty",
-  academicFacultySchema,
+academicFacultySchema.static(
+  "isAcademicFacultExists",
+  async function (id: string) {
+    const isExists = await this.exists({ _id: id });
+    if (!isExists) {
+      throw new AppError(404, "Academic faculty not found !");
+    }
+    return isExists;
+  },
 );
+
+export const AcademicFaculty = model<
+  IAcademicFaculty,
+  IAcademicFacultyModelType
+>("AcademicFaculty", academicFacultySchema);

@@ -6,3 +6,8 @@ export interface IFaculty extends IBaseUser {
   academicFaculty: Types.ObjectId;
   academicDepartment: Types.ObjectId;
 }
+
+export interface IFacultyCounter {
+  key: string;
+  sequence: number;
+}

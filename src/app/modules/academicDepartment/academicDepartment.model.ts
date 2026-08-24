@@ -1,5 +1,8 @@
 import { model, Schema } from "mongoose";
-import type { IAcademicDepartment } from "./academicDepartment.interface";
+import type {
+  IAcademicDepartment,
+  IAcademicDepartmentModelType,
+} from "./academicDepartment.interface";
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
 import { AppError } from "../../errors/appError";
 
@@ -19,6 +22,17 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
   {
     timestamps: true,
     versionKey: false,
+  },
+);
+
+academicDepartmentSchema.static(
+  "isAcademicDepartmentExists",
+  async function (id: string) {
+    const isExists = await this.exists({ _id: id });
+    if (!isExists) {
+      throw new AppError(404, "Academic department not found");
+    }
+    return isExists
   },
 );
 
@@ -50,7 +64,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
   }
 });
 
-export const AcademicDepartment = model<IAcademicDepartment>(
-  "AcademicDepartment",
-  academicDepartmentSchema,
-);
+export const AcademicDepartment = model<
+  IAcademicDepartment,
+  IAcademicDepartmentModelType
+>("AcademicDepartment", academicDepartmentSchema);

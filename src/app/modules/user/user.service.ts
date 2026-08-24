@@ -7,15 +7,12 @@ import { Student } from "../student/student.model";
 import { Role, type IUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentID } from "./user.utils";
+import type { IFaculty } from "../faculty/faculty.interface";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
-  const academicSemester = await AcademicSemester.findById(
+  const academicSemester = await AcademicSemester.isAcademicSemesterExists(
     payload.admissionSemester,
   );
-
-  if (!academicSemester) {
-    throw new AppError(404, "Academic semester not found");
-  }
 
   const session = await mongoose.startSession();
 
@@ -31,15 +28,14 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
     };
 
     // create a user transaction-1
-    const newUser = await User.create([userData], { session });
-    const user = newUser.at(0);
+    const newUser = (await User.create([userData], { session })).at(0);
 
-    if (!user) {
+    if (!newUser) {
       throw new AppError(400, "Failed to create user");
     }
 
-    payload.id = user.id;
-    payload.user = user._id;
+    payload.id = newUser.id;
+    payload.user = newUser._id;
 
     // Create student transaction-2
     const newStudent = await Student.create([payload], { session });
@@ -58,6 +54,11 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
   }
 };
 
+const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
+  
+};
+
 export const userServices = {
   createStudentIntoDB,
+  createFacultyIntoDB,
 };

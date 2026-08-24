@@ -1,3 +1,5 @@
+import type { Model, Types } from "mongoose";
+
 export enum Months {
   JANUARY = "January",
   FEBRUARY = "February",
@@ -35,4 +37,8 @@ export interface IAcademicSemester {
 
 export interface IAcademicSemesterNameCodeMapper {
   [key: string]: string;
+}
+
+export interface IAcademicSemesterModelType extends Model<IAcademicSemester> {
+  isAcademicSemesterExists(id: Types.ObjectId): Promise<IAcademicSemester>;
 }

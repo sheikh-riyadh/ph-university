@@ -121,8 +121,13 @@ const studentCounterSchema = new Schema<IStudentCounter>(
 
 // Custom static method
 studentSchema.static("isStudentExist", async function (id: string) {
-  const studentExists = await this.exists({ id });
-  return studentExists;
+  const isExists = await this.exists({ id });
+
+  if (isExists) {
+    throw new AppError(409, "Student already exists");
+  }
+
+  return isExists;
 });
 
 studentSchema.pre("save", async function () {

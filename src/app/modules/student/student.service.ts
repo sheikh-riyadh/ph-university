@@ -11,12 +11,10 @@ import {
 import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
-  const isExist = await Student.isStudentExist(payload.id);
-  if (!isExist) {
+  const isExists = await Student.isStudentExist(payload.id);
+  if (!isExists) {
     const result = await Student.create(payload);
     return result;
-  } else {
-    throw new AppError(409, "User already exists");
   }
 };
 

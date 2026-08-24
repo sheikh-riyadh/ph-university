@@ -7,7 +7,7 @@ export const handleDuplicateError = (
   const message =
     error.message
       .match(/dup key:\s*(\{.*\})/)?.[1]
-      ?.concat(" is already exsits") || "";
+      ?.concat(" is already exists") || "";
 
   const errorSources = [
     {
@@ -16,7 +16,7 @@ export const handleDuplicateError = (
     },
   ];
 
-  const statusCode = 500;
+  const statusCode = 409;
 
   return {
     statusCode,
