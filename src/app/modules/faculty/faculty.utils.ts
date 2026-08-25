@@ -17,12 +17,13 @@ export const generateFacultyID = async (
     },
     {
       new: true,
+      upsert: true,
       session,
     },
   );
 
   if (!counter) {
-    throw new Error("Failed to generate student ID");
+    throw new Error("Failed to generate faculty ID");
   }
 
   const sequence = counter.sequence.toString().padStart(4, "0");

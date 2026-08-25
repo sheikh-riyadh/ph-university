@@ -27,12 +27,12 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
 
 academicDepartmentSchema.static(
   "isAcademicDepartmentExists",
-  async function (id: string) {
+  async function (id: Schema.Types.ObjectId) {
     const isExists = await this.exists({ _id: id });
     if (!isExists) {
       throw new AppError(404, "Academic department not found");
     }
-    return isExists
+    return isExists;
   },
 );
 

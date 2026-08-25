@@ -1,5 +1,8 @@
 import z from "zod";
-import { personValidationSchema } from "../../validations/common.validation";
+import {
+  personValidationSchema,
+  zodNameValidationSchema,
+} from "../../validations/common.validation";
 
 const facultyValidationSchema = z.object({
   ...personValidationSchema,
@@ -17,7 +20,11 @@ const zodCreateFacultyValidationSchema = z.object({
 
 const zodUpdateFacultyValidationSchema = z.object({
   body: z.object({
-    faculty: facultyValidationSchema.partial(),
+    faculty: facultyValidationSchema
+      .extend({
+        name: zodNameValidationSchema.partial(),
+      })
+      .partial(),
   }),
 });
 

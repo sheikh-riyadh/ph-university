@@ -29,7 +29,7 @@ const updateStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
   const result = await StudentServices.updateStudentFromDB(
     studentId as string,
-    req.body.student,
+    req?.body?.student,
   );
   res.status(200).json({
     success: true,

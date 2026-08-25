@@ -6,5 +6,5 @@ export interface IAcademicDepartment {
 }
 
 export interface IAcademicDepartmentModelType extends Model<IAcademicDepartment> {
-  isAcademicDepartmentExists(id: string): Promise<boolean | null>;
+  isAcademicDepartmentExists(id: Types.ObjectId): Promise<boolean | null>;
 }

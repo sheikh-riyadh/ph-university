@@ -1,0 +1,44 @@
+import { catchAsync } from "../../utils/catchAsync";
+import { facultyServices } from "./faculty.service";
+
+const getSingleFaculty = catchAsync(async (req, res) => {
+  const { facultyId } = req.params;
+  const result = await facultyServices.getSingleFacultyFromDB(
+    facultyId as string,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Single faculty retrived successfully",
+    data: result,
+  });
+});
+
+const getAllFaculties = catchAsync(async (req, res) => {
+  const result = await facultyServices.getAllFacultiesFromDB();
+  res.status(200).json({
+    success: true,
+    message: "All faculties retrived succssfully",
+    data: result,
+  });
+});
+
+const updateFaculty = catchAsync(async (req, res) => {
+  const { facultyId } = req.params;
+  const result = await facultyServices.updateFacultyFromDB(
+    facultyId as string,
+    req?.body?.faculty,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Faculty updated successfully",
+    data: result,
+  });
+});
+
+export const facultyControllers = {
+  getSingleFaculty,
+  getAllFaculties,
+  updateFaculty,
+};

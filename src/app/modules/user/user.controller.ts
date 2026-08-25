@@ -1,7 +1,7 @@
 import { catchAsync } from "../../utils/catchAsync";
 import { userServices } from "./user.service";
 
-const createUser = catchAsync(async (req, res) => {
+const createStudent = catchAsync(async (req, res) => {
   const { password, student } = req.body;
   const user = await userServices.createStudentIntoDB(password, student);
   res.status(201).json({
@@ -11,6 +11,17 @@ const createUser = catchAsync(async (req, res) => {
   });
 });
 
+const createFaculty = catchAsync(async (req, res) => {
+  const { password, faculty } = req.body;
+  const facultyData = await userServices.createFacultyIntoDB(password, faculty);
+  res.status(201).json({
+    success: true,
+    message: "Faculty created successfully",
+    data: facultyData,
+  });
+});
+
 export const userController = {
-  createUser,
+  createStudent,
+  createFaculty,
 };
