@@ -13,4 +13,10 @@ router.patch(
   facultyControllers.updateFaculty,
 );
 
+router.delete(
+  "/:facultyId",
+  validateRequest(facultyValidations.zodFacultyIdValidationSchema),
+  facultyControllers.deleteFaculty,
+);
+
 export const facultyRoutes = router;

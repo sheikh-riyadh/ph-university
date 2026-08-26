@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
 import type { IFaculty } from "./faculty.interface";
 import { Faculty } from "./faculty.model";
+import { User } from "../user/user.model";
+import { AppError } from "../../errors/appError";
 
 const getAllFacultiesFromDB = async () => {
   const result = await Faculty.find();
@@ -37,8 +40,44 @@ const updateFacultyFromDB = async (
   return result;
 };
 
+const deleteFacultyFromDB = async (facultyId: string) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const deletedUser = await User.findOneAndUpdate(
+      { id: facultyId },
+      { isDeleted: true },
+      { returnDocument: "after", session },
+    );
+
+    if (!deletedUser) {
+      throw new AppError(400, "Failed to delete user");
+    }
+
+    const deletedFaculty = await Faculty.findOneAndUpdate(
+      { id: facultyId },
+      { isDeleted: true },
+      { returnDocument: "after", session },
+    );
+
+    if (!deletedFaculty) {
+      throw new AppError(400, "Failed to delete faculty");
+    }
+
+    await session.commitTransaction();
+    return deletedFaculty;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
+
 export const facultyServices = {
   getAllFacultiesFromDB,
   getSingleFacultyFromDB,
   updateFacultyFromDB,
+  deleteFacultyFromDB,
 };

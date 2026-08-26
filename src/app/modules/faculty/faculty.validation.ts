@@ -26,9 +26,19 @@ const zodUpdateFacultyValidationSchema = z.object({
       })
       .partial(),
   }),
+  params: z.object({
+    facultyId: z.string("Faculty id is required").min(1),
+  }),
+});
+
+const zodFacultyIdValidationSchema = z.object({
+  params: z.object({
+    facultyId: z.string().max(6, "Faculty id is required"),
+  }),
 });
 
 export const facultyValidations = {
   zodCreateFacultyValidationSchema,
   zodUpdateFacultyValidationSchema,
+  zodFacultyIdValidationSchema,
 };
