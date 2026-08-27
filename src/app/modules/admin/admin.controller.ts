@@ -12,7 +12,7 @@ const getSingleAdmin = catchAsync(async (req, res) => {
 });
 
 const getAllAdmins = catchAsync(async (req, res) => {
-  const result = await adminServices.getAllAdminsFromDB();
+  const result = await adminServices.getAllAdminsFromDB(req.query);
   res.status(200).json({
     success: true,
     message: "All admins retrived successfully",

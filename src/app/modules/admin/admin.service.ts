@@ -3,14 +3,27 @@ import type { IAdmin } from "./admin.interface";
 import { Admin } from "./admin.model";
 import { User } from "../user/user.model";
 import { AppError } from "../../errors/appError";
+import { QueryBuilder } from "../../builders/QueryBuilder";
+import {
+  allowedAdminFilterFields,
+  allowedAdminSearchableFields,
+  excludedAdminFields,
+} from "./admin.constant";
 
 const getSingleAdminFromDB = async (adminId: string) => {
   const result = await Admin.findById(adminId);
   return result;
 };
 
-const getAllAdminsFromDB = async () => {
-  const result = await Admin.find();
+const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
+  const adminQuery = new QueryBuilder(Admin.find(), query)
+    .search(allowedAdminSearchableFields)
+    .filter(allowedAdminFilterFields, excludedAdminFields)
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await adminQuery.modelQuery;
   return result;
 };
 

@@ -3,9 +3,23 @@ import type { IFaculty } from "./faculty.interface";
 import { Faculty } from "./faculty.model";
 import { User } from "../user/user.model";
 import { AppError } from "../../errors/appError";
+import { QueryBuilder } from "../../builders/QueryBuilder";
+import {
+  allowedFacultyFilterFields,
+  allowedFacultySearchableFields,
+  excludedFacultyFields,
+} from "./faculty.constant";
 
-const getAllFacultiesFromDB = async () => {
-  const result = await Faculty.find();
+const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
+  const facultyQuery = new QueryBuilder(Faculty.find(), query)
+    .search(allowedFacultySearchableFields)
+    .filter(allowedFacultyFilterFields, excludedFacultyFields)
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await facultyQuery.modelQuery;
+
   return result;
 };
 

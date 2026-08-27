@@ -39,7 +39,6 @@ export class QueryBuilder<T> {
     });
     excludedFields.forEach((element) => delete newQuery[element]);
     this.modelQuery = this.modelQuery.find(newQuery);
-
     return this;
   }
 

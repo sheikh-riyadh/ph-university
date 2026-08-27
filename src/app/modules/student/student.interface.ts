@@ -1,5 +1,9 @@
 import type { Model, Types } from "mongoose";
-import type { Gender, IBaseUser } from "../../interfaces/common.interface";
+import type {
+  BloodGroup,
+  Gender,
+  IBaseUser,
+} from "../../interfaces/common.interface";
 
 export type TGuardian = {
   fatherName: string;
@@ -17,20 +21,8 @@ export type TLocalGuardian = {
   address: string;
 };
 
-export enum BloodGroup {
-  A_POSITIVE = "A+",
-  A_NEGATIVE = "A-",
-  B_POSITIVE = "B+",
-  B_NEGATIVE = "B-",
-  AB_POSITIVE = "AB+",
-  AB_NEGATIVE = "AB-",
-  O_POSITIVE = "O+",
-  O_NEGATIVE = "O-",
-}
-
 export interface IStudent extends IBaseUser {
   password: string;
-  bloodGroup?: BloodGroup;
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   admissionSemester: Types.ObjectId;
@@ -54,5 +46,5 @@ export interface IStudentCounter {
 }
 
 export interface StudentModelType extends Model<IStudent> {
-  isStudentExist(id: string): Promise<boolean | null>;
+  isUserExists(id: string): Promise<boolean | null>;
 }

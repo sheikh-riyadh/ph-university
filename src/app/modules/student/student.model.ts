@@ -5,12 +5,12 @@ import {
   type IStudent,
   type StudentModelType,
   type IStudentCounter,
-  BloodGroup,
 } from "./student.interface";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { AppError } from "../../errors/appError";
 import { basePersonSchema } from "../../schemas/common.schema";
+import { BloodGroup } from "../../interfaces/common.interface";
 
 const guardianSchema = new Schema<TGuardian>(
   {
@@ -120,7 +120,7 @@ const studentCounterSchema = new Schema<IStudentCounter>(
 );
 
 // Custom static method
-studentSchema.static("isStudentExist", async function (id: string) {
+studentSchema.static("isUserExists", async function (id: string) {
   const isExists = await this.exists({ id });
 
   if (isExists) {
@@ -171,8 +171,6 @@ studentSchema.pre("findOneAndUpdate", async function () {
   if (!isAcademicDepartmentExists) {
     throw new AppError(404, "Academic department not found!");
   }
-
-  // const isAcademicDepartmentExists = await AcademicDepartment.findById();
 });
 
 export const Student = model<IStudent, StudentModelType>(

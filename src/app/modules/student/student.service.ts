@@ -11,7 +11,7 @@ import {
 import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
-  const isExists = await Student.isStudentExist(payload.id);
+  const isExists = await Student.isUserExists(payload.id);
   if (!isExists) {
     const result = await Student.create(payload);
     return result;
