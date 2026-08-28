@@ -10,6 +10,9 @@ import { generateStudentID } from "./user.utils";
 import type { IFaculty } from "../faculty/faculty.interface";
 import { generateFacultyID } from "../faculty/faculty.utils";
 import { Faculty } from "../faculty/faculty.model";
+import type { IAdmin } from "../admin/admin.interface";
+import { generateAdminID } from "../admin/admin.utils";
+import { Admin } from "../admin/admin.model";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
   const academicSemester = await AcademicSemester.isAcademicSemesterExists(
@@ -89,7 +92,7 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
     // Create a faculty transaction-2
     const newFaculty = await Faculty.create([facultyData], { session });
 
-    if (!newFaculty?.length) {
+    if (!newFaculty.length) {
       throw new AppError(400, "Failed to create faculty");
     }
 
@@ -103,7 +106,49 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
   }
 };
 
+const createAdminIntoDB = async (password: string, payload: IAdmin) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const adminId = await generateAdminID(session);
+    const userData: Partial<IUser> = {
+      password: password || (config.default_pass as string),
+      role: Role.ADMIN,
+      id: adminId,
+    };
+
+    const newUser = (await User.create([userData], { session })).at(0);
+
+    if (!newUser) {
+      throw new AppError(400, "Failed to create user !");
+    }
+
+    const adminData: IAdmin = {
+      ...payload,
+      user: newUser._id,
+      id: newUser.id,
+    };
+
+    const newAdmin = await Admin.create([adminData], { session });
+
+    if (!newAdmin.length) {
+      throw new AppError(400, "Failed to create admin !");
+    }
+
+    await session.commitTransaction();
+    return newAdmin;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
+
 export const userServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
+  createAdminIntoDB,
 };

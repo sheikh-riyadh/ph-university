@@ -1,8 +1,13 @@
+import mongoose from "mongoose";
 import z from "zod";
 
 const academicDepartmentValidationSchema = z.object({
-  name: z.string(),
-  academicFaculty: z.string(),
+  name: z.string({
+    error: "name is required",
+  }),
+  academicFaculty: z.string({
+    error: "academic faculty is required",
+  }),
 });
 
 const zodCreateAcademicDepartmentValidationSchema = z.object({
@@ -11,9 +16,26 @@ const zodCreateAcademicDepartmentValidationSchema = z.object({
 
 const zodUpdateAcademicDepartmentValidationSchema = z.object({
   body: academicDepartmentValidationSchema.partial(),
+  params: z.object({
+    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "invalid academic department id",
+    }),
+  }),
+});
+
+const zodGetAcademicDepartmentValidationSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid academic department id",
+      })
+      .optional(),
+  }),
 });
 
 export const academicDepartmentValidations = {
   zodCreateAcademicDepartmentValidationSchema,
   zodUpdateAcademicDepartmentValidationSchema,
+  zodGetAcademicDepartmentValidationSchema,
 };

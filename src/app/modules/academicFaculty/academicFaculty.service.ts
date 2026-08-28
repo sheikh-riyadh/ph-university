@@ -25,16 +25,9 @@ const updateSingleAcademicFacultyFromDB = async (
   });
   return result;
 };
-
-const deleteAcademicFacultyFromDB = async (id: string) => {
-  const result = await AcademicFaculty.findByIdAndDelete(id);
-  return result;
-};
-
 export const academicFacultyServices = {
   createAcademicFacultyIntoDB,
   getAcademicFacultiesFromDB,
   getSingleAcademicFacultyFromDB,
   updateSingleAcademicFacultyFromDB,
-  deleteAcademicFacultyFromDB,
 };

@@ -13,15 +13,24 @@ router.post(
   academicDepartmentControllers.createAcademicDepartment,
 );
 
-router.get("/", academicDepartmentControllers.getAllAcademicDepartments);
+router.get(
+  "/",
+  validateRequest(
+    academicDepartmentValidations.zodGetAcademicDepartmentValidationSchema,
+  ),
+  academicDepartmentControllers.getAllAcademicDepartments,
+);
 
 router.get(
-  "/:academicDepartmentId",
+  "/:id",
+  validateRequest(
+    academicDepartmentValidations.zodGetAcademicDepartmentValidationSchema,
+  ),
   academicDepartmentControllers.getSingleAcademicDepartment,
 );
 
 router.patch(
-  "/:academicDepartmentId",
+  "/:id",
   validateRequest(
     academicDepartmentValidations.zodUpdateAcademicDepartmentValidationSchema,
   ),

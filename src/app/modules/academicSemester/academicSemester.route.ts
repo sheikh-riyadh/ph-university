@@ -15,11 +15,14 @@ router.post(
 
 router.get("/", academicSemesterControllers.getAllAcademicSemesters);
 router.get(
-  "/:semesterId",
+  "/:id",
+  validateRequest(
+    academicSemesterValidations.zodGetAcademicSemesterValidationSchema,
+  ),
   academicSemesterControllers.getSingleAcademicSemester,
 );
 router.patch(
-  "/:semesterId",
+  "/:id",
   validateRequest(
     academicSemesterValidations.zodUpdateAcademicSemesterValidationSchema,
   ),

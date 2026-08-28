@@ -11,7 +11,7 @@ import {
 import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
-  const isExists = await Student.isUserExists(payload.id);
+  const isExists = await Student.isStudentExists(payload.id);
   if (!isExists) {
     const result = await Student.create(payload);
     return result;
@@ -107,7 +107,7 @@ const deleteStudentFromDB = async (id: string) => {
     );
 
     if (!deletedUser) {
-      throw new AppError(400, "User not found or already deleted");
+      throw new AppError(400, "user not found or already deleted !");
     }
     const deletedStudent = await Student.findOneAndUpdate(
       { id },
@@ -116,7 +116,7 @@ const deleteStudentFromDB = async (id: string) => {
     );
 
     if (!deletedStudent) {
-      throw new AppError(400, "Student not found or already deleted");
+      throw new AppError(400, "student not found or already deleted !");
     }
 
     await session.commitTransaction();

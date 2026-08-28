@@ -58,11 +58,11 @@ facultySchema.pre("save", async function () {
     );
 
   if (!isAcademicFacultyExists) {
-    throw new AppError(404, "Academic faculty not found");
+    throw new AppError(404, "academic faculty not found !");
   }
 
   if (!isAcademicDepartmentExists) {
-    throw new AppError(404, "Academic department not found");
+    throw new AppError(404, "academic department not found !");
   }
 });
 
@@ -73,7 +73,7 @@ facultySchema.pre("findOneAndUpdate", async function () {
   const faculty = await Faculty.findOne(query);
 
   if (!faculty) {
-    throw new AppError(404, "Faculty not found !");
+    throw new AppError(404, "faculty not found !");
   }
 
   const academicFacultyId = payload.academicFaculty || faculty.academicFaculty;

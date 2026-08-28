@@ -6,8 +6,9 @@ import {
 
 const adminValidationSchema = z.object({
   ...personValidationSchema,
-  designation: z.string(),
-  manageDepartment: z.string(),
+  designation: z.string({
+    error: "designation is required",
+  }),
 });
 
 const zodCreateAdminValidationSchema = z.object({
@@ -26,7 +27,7 @@ const zodUpdateAdminValidationShema = z.object({
       .partial(),
   }),
   params: z.object({
-    adminId: z.string("admin is is required").min(1),
+    adminId: z.string("admin id is required").min(1),
   }),
 });
 

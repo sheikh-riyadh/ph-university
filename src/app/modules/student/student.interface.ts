@@ -46,5 +46,5 @@ export interface IStudentCounter {
 }
 
 export interface StudentModelType extends Model<IStudent> {
-  isUserExists(id: string): Promise<boolean | null>;
+  isStudentExists(id: string): Promise<boolean | null>;
 }

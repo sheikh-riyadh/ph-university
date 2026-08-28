@@ -40,11 +40,15 @@ const createAcademicSemesterIntoDB = async (payload: IAcademicSemester) => {
 };
 
 const getAllAcademicSemestersFromDB = async () => {
-  const result = await AcademicSemester.find({});
+  const result = await AcademicSemester.find();
   return result;
 };
 
 const getSingleAcademicSemesterFromDB = async (id: string) => {
+  const isAcademicSemesterExists = await AcademicSemester.exists({ _id: id });
+  if (!isAcademicSemesterExists) {
+    throw new AppError(404, "academic semester not found !");
+  }
   const result = await AcademicSemester.findById(id);
   return result;
 };
@@ -56,7 +60,7 @@ const updateAcademicSemesterFromDB = async (
   const existingSemester = await AcademicSemester.findById(id);
 
   if (!existingSemester) {
-    throw new AppError(404, "Academic semester not found");
+    throw new AppError(404, "academic semester not found !");
   }
 
   const name = payload.name ?? existingSemester.name;

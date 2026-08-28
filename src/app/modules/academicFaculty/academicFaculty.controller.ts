@@ -22,23 +22,23 @@ const getAllAcademicFaculties = catchAsync(async (req, res) => {
 });
 
 const getSingleAcademicFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const { id } = req.params;
   const result = await academicFacultyServices.getSingleAcademicFacultyFromDB(
-    facultyId as string,
+    id as string,
   );
 
   res.status(200).json({
     success: true,
     message: "Single acadmic faculty retrived successfully",
     data: result,
-  });j
+  });
 });
 
 const updateAcademicFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const { id } = req.params;
   const result =
     await academicFacultyServices.updateSingleAcademicFacultyFromDB(
-      facultyId as string,
+      id as string,
       req.body,
     );
 

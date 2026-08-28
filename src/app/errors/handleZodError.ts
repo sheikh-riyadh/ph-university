@@ -11,7 +11,7 @@ export const zodErrorHandler = (error: ZodError): TGenericErrorResponse => {
 
   return {
     statusCode,
-    message: error.name,
+    message: errorSources[0]?.message || "",
     errorSources,
   };
 };

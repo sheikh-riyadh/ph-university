@@ -29,5 +29,5 @@ export const generateAdminID = async (
 
   const sequence = counter.sequence.toString().padStart(4, "0");
 
-  return sequence;
+  return `A-${sequence}`;
 };

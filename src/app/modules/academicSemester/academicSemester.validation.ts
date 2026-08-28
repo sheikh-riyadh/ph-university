@@ -1,12 +1,23 @@
 import z from "zod";
 import { Codes, Months, Name } from "./academicSemester.interface";
+import mongoose from "mongoose";
 
 const academicSemesterValidationSchema = z.object({
-  name: z.enum(Name),
-  year: z.string(),
-  code: z.enum(Codes),
-  startMonth: z.enum(Months),
-  endMonth: z.enum(Months),
+  name: z.enum(Name, {
+    error: "name is required",
+  }),
+  year: z.string({
+    error: "year is required",
+  }),
+  code: z.enum(Codes, {
+    error: "code is required",
+  }),
+  startMonth: z.enum(Months, {
+    error: "start month is required",
+  }),
+  endMonth: z.enum(Months, {
+    error: "end month is required",
+  }),
 });
 
 const zodCreateAcademicSemesterValidationSchema = z.object({
@@ -15,9 +26,26 @@ const zodCreateAcademicSemesterValidationSchema = z.object({
 
 const zodUpdateAcademicSemesterValidationSchema = z.object({
   body: academicSemesterValidationSchema.partial(),
+  params: z.object({
+    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "invalid academic semester id",
+    }),
+  }),
+});
+
+const zodGetAcademicSemesterValidationSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid academic semester id",
+      })
+      .optional(),
+  }),
 });
 
 export const academicSemesterValidations = {
   zodCreateAcademicSemesterValidationSchema,
   zodUpdateAcademicSemesterValidationSchema,
+  zodGetAcademicSemesterValidationSchema,
 };

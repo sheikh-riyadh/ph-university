@@ -11,7 +11,10 @@ import {
 } from "./faculty.constant";
 
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
-  const facultyQuery = new QueryBuilder(Faculty.find(), query)
+  const facultyQuery = new QueryBuilder(
+    Faculty.find().populate("academicFaculty").populate("academicDepartment"),
+    query,
+  )
     .search(allowedFacultySearchableFields)
     .filter(allowedFacultyFilterFields, excludedFacultyFields)
     .sort()
@@ -24,7 +27,9 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleFacultyFromDB = async (facultyId: string) => {
-  const result = await Faculty.findById(facultyId);
+  const result = await Faculty.findById(facultyId)
+    .populate("academicFaculty")
+    .populate("academicDepartment");
   return result;
 };
 

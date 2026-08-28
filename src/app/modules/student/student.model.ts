@@ -10,7 +10,6 @@ import { AcademicDepartment } from "../academicDepartment/academicDepartment.mod
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { AppError } from "../../errors/appError";
 import { basePersonSchema } from "../../schemas/common.schema";
-import { BloodGroup } from "../../interfaces/common.interface";
 
 const guardianSchema = new Schema<TGuardian>(
   {
@@ -72,10 +71,6 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 const studentSchema = new Schema<IStudent, StudentModelType>(
   {
     ...basePersonSchema,
-    bloodGroup: {
-      type: String,
-      enum: Object.values(BloodGroup),
-    },
     guardian: {
       type: guardianSchema,
       required: true,
@@ -120,7 +115,7 @@ const studentCounterSchema = new Schema<IStudentCounter>(
 );
 
 // Custom static method
-studentSchema.static("isUserExists", async function (id: string) {
+studentSchema.static("isStudentExists", async function (id: string) {
   const isExists = await this.exists({ id });
 
   if (isExists) {
@@ -136,7 +131,7 @@ studentSchema.pre("save", async function () {
   });
 
   if (!isAcademicDepartmentExists) {
-    throw new AppError(404, "Academic department not found!");
+    throw new AppError(404, "academic department not found !");
   }
 });
 
@@ -147,7 +142,7 @@ studentSchema.pre("findOneAndUpdate", async function () {
   const student = await Student.findOne(query);
 
   if (!student) {
-    throw new AppError(404, "Student not found!");
+    throw new AppError(404, "student not found !");
   }
 
   const academicDepartment =
@@ -165,11 +160,11 @@ studentSchema.pre("findOneAndUpdate", async function () {
   });
 
   if (!isAcademicSemesterExists) {
-    throw new AppError(404, "Admission semester not found!");
+    throw new AppError(404, "admission semester not found !");
   }
 
   if (!isAcademicDepartmentExists) {
-    throw new AppError(404, "Academic department not found!");
+    throw new AppError(404, "academic department not found !");
   }
 });
 

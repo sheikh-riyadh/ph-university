@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { Gender, type TName } from "../interfaces/common.interface";
+import { BloodGroup, Gender, type TName } from "../interfaces/common.interface";
 
 const userNameSchema = new Schema<TName>(
   {
@@ -41,6 +41,10 @@ export const basePersonSchema = {
     type: String,
     required: true,
     enum: Object.values(Gender),
+  },
+  bloodGroup: {
+    type: String,
+    enum: Object.values(BloodGroup),
   },
   dateOfBirth: {
     type: Date,

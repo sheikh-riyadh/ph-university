@@ -30,7 +30,7 @@ academicDepartmentSchema.static(
   async function (id: Schema.Types.ObjectId) {
     const isExists = await this.exists({ _id: id });
     if (!isExists) {
-      throw new AppError(404, "Academic department not found");
+      throw new AppError(404, "academic department not found !");
     }
     return isExists;
   },
@@ -39,7 +39,7 @@ academicDepartmentSchema.static(
 academicDepartmentSchema.pre("save", async function () {
   const isExists = await AcademicFaculty.exists({ _id: this.academicFaculty });
   if (!isExists) {
-    throw new AppError(404, "Academic faculty not found!");
+    throw new AppError(404, "academic faculty not found !");
   }
 });
 
@@ -47,10 +47,10 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
   const payload = this.getUpdate() as Partial<IAcademicDepartment>;
 
-  const department = await this.model.findOne(query);
+  const department = await this.model.findById(query);
 
   if (!department) {
-    throw new AppError(404, "Academic department not found !");
+    throw new AppError(404, "academic department not found !");
   }
 
   const academicFaculty = payload.academicFaculty ?? department.academicFaculty;
@@ -60,7 +60,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
   });
 
   if (!isFacultyExists) {
-    throw new AppError(404, "Academic faculty not found !");
+    throw new AppError(404, "academic faculty not found !");
   }
 });
 

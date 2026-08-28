@@ -46,7 +46,7 @@ academicSemesterSchema.static(
   async function (id: Types.ObjectId) {
     const academicSemester = await this.findById(id);
     if (!academicSemester) {
-      throw new AppError(404, "Academic semester not found !");
+      throw new AppError(404, "academic semester not found !");
     }
     return academicSemester;
   },
@@ -59,7 +59,7 @@ academicSemesterSchema.pre("save", async function () {
   });
 
   if (isExists) {
-    throw new AppError(409, "Semester already exists");
+    throw new AppError(409, "semester already exists !");
   }
 });
 

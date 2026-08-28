@@ -2,17 +2,19 @@ import { model, Schema } from "mongoose";
 import { basePersonSchema } from "../../schemas/common.schema";
 import type { IAdmin, IAdminCounter } from "./admin.interface";
 
-const adminSchema = new Schema<IAdmin>({
-  ...basePersonSchema,
-  designation: {
-    type: String,
-    required: true,
+const adminSchema = new Schema<IAdmin>(
+  {
+    ...basePersonSchema,
+    designation: {
+      type: String,
+      required: true,
+    },
   },
-  manageDepartment: {
-    type: Schema.Types.ObjectId,
-    ref: "AcademicDepartment",
+  {
+    timestamps: true,
+    versionKey:false
   },
-});
+);
 
 const adminCounterSchema = new Schema<IAdminCounter>({
   key: {
