@@ -7,11 +7,11 @@ export const zodErrorHandler = (error: ZodError): TGenericErrorResponse => {
     message: issue.message,
   }));
 
-  const statusCode = 404;
+  const statusCode = 400;
 
   return {
     statusCode,
-    message: errorSources[0]?.message || "",
+    message: errorSources[0]?.message || "Something went wrong !",
     errorSources,
   };
 };

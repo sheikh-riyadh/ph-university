@@ -6,20 +6,21 @@ import { adminValidations } from "./admin.validation";
 const router = express.Router();
 
 router.get("/", adminControllers.getAllAdmins);
-router.get(
-  "/:adminId",
 
+router.get(
+  "/:id",
+  validateRequest(adminValidations.zodAdminIdValidationSchema),
   adminControllers.getSingleAdmin,
 );
 
 router.patch(
-  "/:adminId",
+  "/:id",
   validateRequest(adminValidations.zodUpdateAdminValidationShema),
   adminControllers.updateAdmin,
 );
 
 router.delete(
-  "/:adminId",
+  "/:id",
   validateRequest(adminValidations.zodAdminIdValidationSchema),
   adminControllers.deleteAdmin,
 );

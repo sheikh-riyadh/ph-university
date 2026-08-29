@@ -70,7 +70,7 @@ facultySchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
   const payload = this.getUpdate() as Partial<IFaculty>;
 
-  const faculty = await Faculty.findOne(query);
+  const faculty = await Faculty.findOne({ ...query, isDeleted: { $ne: true } });
 
   if (!faculty) {
     throw new AppError(404, "faculty not found !");
@@ -84,6 +84,19 @@ facultySchema.pre("findOneAndUpdate", async function () {
   await AcademicFaculty.isAcademicFacultExists(academicFacultyId);
 
   await AcademicDepartment.isAcademicDepartmentExists(academicDepartmentId);
+});
+
+// Query Middleware
+facultySchema.pre("find", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+facultySchema.pre("findOne", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+facultySchema.pre("aggregate", function () {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
 export const FacultyCounter = model<IFacultyCounter>(

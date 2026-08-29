@@ -18,7 +18,7 @@ router.get("/", academicFacultyControllers.getAllAcademicFaculties);
 router.get(
   "/:id",
   validateRequest(
-    academicFacultyValidations.zodGetAcademicFacultyValidationSchema,
+    academicFacultyValidations.zodAcademicFacultyIdValidationSchema,
   ),
   academicFacultyControllers.getSingleAcademicFaculty,
 );
@@ -30,4 +30,5 @@ router.patch(
   ),
   academicFacultyControllers.updateAcademicFaculty,
 );
+
 export const academicFacultyRoutes = router;

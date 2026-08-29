@@ -27,18 +27,22 @@ const zodCreateAcademicSemesterValidationSchema = z.object({
 const zodUpdateAcademicSemesterValidationSchema = z.object({
   body: academicSemesterValidationSchema.partial(),
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid academic semester id",
-    }),
+    id: z
+      .string({
+        error: "academic semester id is required !",
+      })
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid academic semester id !",
+      }),
   }),
 });
 
-const zodGetAcademicSemesterValidationSchema = z.object({
+const zodAcademicSemesterIdValidationSchema = z.object({
   params: z.object({
     id: z
       .string()
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic semester id",
+        message: "invalid academic semester id !",
       })
       .optional(),
   }),
@@ -47,5 +51,5 @@ const zodGetAcademicSemesterValidationSchema = z.object({
 export const academicSemesterValidations = {
   zodCreateAcademicSemesterValidationSchema,
   zodUpdateAcademicSemesterValidationSchema,
-  zodGetAcademicSemesterValidationSchema,
+  zodAcademicSemesterIdValidationSchema,
 };

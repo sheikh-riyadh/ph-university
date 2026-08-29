@@ -12,11 +12,11 @@ export const handleMongooseValidationError = (
       };
     },
   );
-  const statusCode = 500;
+  const statusCode = 400;
 
   return {
     statusCode,
-    message: error.name,
+    message: errorSources[0]?.message || "Something went wrong !",
     errorSources,
   };
 };

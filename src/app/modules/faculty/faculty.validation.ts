@@ -3,6 +3,7 @@ import {
   personValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
+import mongoose from "mongoose";
 
 const facultyValidationSchema = z.object({
   ...personValidationSchema,
@@ -27,13 +28,17 @@ const zodUpdateFacultyValidationSchema = z.object({
       .partial(),
   }),
   params: z.object({
-    facultyId: z.string("Faculty id is required").min(1),
+    id: z
+      .string("faculty id is required !")
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid faculty id !",
+      }),
   }),
 });
 
 const zodFacultyIdValidationSchema = z.object({
   params: z.object({
-    facultyId: z.string().max(6, "Faculty id is required"),
+    id: z.string().max(6, "Faculty id is required"),
   }),
 });
 

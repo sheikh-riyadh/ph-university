@@ -1,9 +1,11 @@
 import z from "zod";
 import {
   personValidationSchema,
+  zodBloodGroupSchema,
   zodGenderValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
+import mongoose from "mongoose";
 
 export const zodGuardianValidationSchema = z.object({
   fatherName: z.string(),
@@ -21,20 +23,8 @@ export const zodLocalGuardianValidationSchema = z.object({
   address: z.string(),
 });
 
-export const zodBloodGroupSchema = z.enum([
-  "A+",
-  "A-",
-  "B+",
-  "B-",
-  "AB+",
-  "AB-",
-  "O+",
-  "O-",
-]);
-
 const studentValidationSchema = z.object({
   ...personValidationSchema,
-  bloodGroup: zodBloodGroupSchema,
   guardian: zodGuardianValidationSchema,
   localGuardian: zodLocalGuardianValidationSchema,
   admissionSemester: z.string(),
@@ -57,6 +47,15 @@ const zodUpdateStudentValidationSchema = z.object({
         localGuardian: zodLocalGuardianValidationSchema.partial(),
       })
       .partial(),
+  }),
+  params: z.object({
+    id: z
+      .string({
+        error: "student id is required !",
+      })
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid student id !",
+      }),
   }),
 });
 

@@ -3,11 +3,12 @@ import {
   personValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
+import mongoose from "mongoose";
 
 const adminValidationSchema = z.object({
   ...personValidationSchema,
   designation: z.string({
-    error: "designation is required",
+    error: "designation is required !",
   }),
 });
 
@@ -27,13 +28,17 @@ const zodUpdateAdminValidationShema = z.object({
       .partial(),
   }),
   params: z.object({
-    adminId: z.string("admin id is required").min(1),
+    id: z
+      .string("admin id is required !")
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid admin id !",
+      }),
   }),
 });
 
 const zodAdminIdValidationSchema = z.object({
   params: z.object({
-    facultyId: z.string().max(4, "Admin id is required"),
+    id: z.string().max(4, "Admin id is required"),
   }),
 });
 

@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 import { AppError } from "../../errors/appError";
-import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
+import {
+  academicSemesterNameCodeMapper,
+  allowedAcademicSemesterFilterFields,
+  allowedAcademicSemesterSearchableFields,
+  excludedAcademicSemesterFields,
+} from "./academicSemester.constant";
 import type { IAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 import { createCounter } from "./academicSemester.utils";
+import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createAcademicSemesterIntoDB = async (payload: IAcademicSemester) => {
   if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
@@ -39,8 +45,17 @@ const createAcademicSemesterIntoDB = async (payload: IAcademicSemester) => {
   }
 };
 
-const getAllAcademicSemestersFromDB = async () => {
-  const result = await AcademicSemester.find();
+const getAllAcademicSemestersFromDB = async (
+  query: Record<string, unknown>,
+) => {
+  const academicSemesterQuery = new QueryBuilder(AcademicSemester.find(), query)
+    .search(allowedAcademicSemesterSearchableFields)
+    .filter(allowedAcademicSemesterFilterFields, excludedAcademicSemesterFields)
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await academicSemesterQuery.modelQuery;
   return result;
 };
 

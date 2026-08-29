@@ -28,9 +28,7 @@ export class QueryBuilder<T> {
   }
 
   filter(allowedFilterFields: Array<string>, excludedFields: Array<string>) {
-    const newQuery: Record<string, unknown> = {
-      isDeleted: false,
-    };
+    const newQuery: Record<string, unknown> = {};
 
     allowedFilterFields.forEach((field) => {
       if (this?.query[field] !== undefined) {

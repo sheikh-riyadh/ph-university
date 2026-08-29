@@ -1,3 +1,9 @@
+import { QueryBuilder } from "../../builders/QueryBuilder";
+import {
+  allowedAcademicDepartmentFilterFields,
+  allowedAcademicDepartmentSearchableFields,
+  excludedAcademicDepartmentFields,
+} from "./academicDepartment.constant";
 import type { IAcademicDepartment } from "./academicDepartment.interface";
 import { AcademicDepartment } from "./academicDepartment.model";
 
@@ -6,8 +12,24 @@ const createAcademicDepartmentIntoDB = async (payload: IAcademicDepartment) => {
   return result;
 };
 
-const getAllAcademicDepartmentsFromDB = async () => {
-  const result = await AcademicDepartment.find().populate("academicFaculty");
+const getAllAcademicDepartmentsFromDB = async (
+  query: Record<string, unknown>,
+) => {
+  const academicDepartmentQuery = new QueryBuilder(
+    AcademicDepartment.find().populate("academicFaculty"),
+    query,
+  )
+    .search(allowedAcademicDepartmentSearchableFields)
+    .filter(
+      allowedAcademicDepartmentFilterFields,
+      excludedAcademicDepartmentFields,
+    )
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await academicDepartmentQuery.modelQuery;
+
   return result;
 };
 

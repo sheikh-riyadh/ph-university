@@ -15,7 +15,7 @@ export const handleCastError = (
 
   return {
     statusCode,
-    message: error.name,
+    message: errorSources[0]?.message || "Something went wrong !",
     errorSources,
   };
 };

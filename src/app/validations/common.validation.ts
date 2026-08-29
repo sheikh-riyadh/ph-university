@@ -17,7 +17,7 @@ export const zodGenderValidationSchema = z.enum(Gender, {
   error: "Invalid gender. Please provide a valid gender.",
 });
 
-export const zodBloodGroup = z.enum(BloodGroup, {
+export const zodBloodGroupSchema = z.enum(BloodGroup, {
   error: "Invalid blood group. Please provide a valid blood group.",
 });
 
@@ -47,5 +47,5 @@ export const personValidationSchema = {
   profileImage: z.string({
     error: "profile image is required.",
   }),
-  bloodGroup: zodBloodGroup.optional(),
+  bloodGroup: zodBloodGroupSchema.optional(),
 };

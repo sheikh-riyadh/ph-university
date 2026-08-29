@@ -16,7 +16,7 @@ router.post(
 router.get(
   "/",
   validateRequest(
-    academicDepartmentValidations.zodGetAcademicDepartmentValidationSchema,
+    academicDepartmentValidations.zodAcademicDepartmentIdValidationSchema,
   ),
   academicDepartmentControllers.getAllAcademicDepartments,
 );
@@ -24,7 +24,7 @@ router.get(
 router.get(
   "/:id",
   validateRequest(
-    academicDepartmentValidations.zodGetAcademicDepartmentValidationSchema,
+    academicDepartmentValidations.zodAcademicDepartmentIdValidationSchema,
   ),
   academicDepartmentControllers.getSingleAcademicDepartment,
 );

@@ -53,10 +53,7 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
-const updateStudentFromDB = async (
-  studentId: string,
-  payload: Partial<IStudent>,
-) => {
+const updateStudentFromDB = async (id: string, payload: Partial<IStudent>) => {
   const { name, localGuardian, guardian, ...remainingStudentData } = payload;
 
   const modifiedUpdateData: Record<string, unknown> = {
@@ -81,13 +78,9 @@ const updateStudentFromDB = async (
     });
   }
 
-  const result = await Student.findByIdAndUpdate(
-    studentId,
-    modifiedUpdateData,
-    {
-      returnDocument: "after",
-    },
-  );
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdateData, {
+    returnDocument: "after",
+  });
   return result;
 };
 

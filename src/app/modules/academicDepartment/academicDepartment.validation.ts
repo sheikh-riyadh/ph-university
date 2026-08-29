@@ -17,18 +17,22 @@ const zodCreateAcademicDepartmentValidationSchema = z.object({
 const zodUpdateAcademicDepartmentValidationSchema = z.object({
   body: academicDepartmentValidationSchema.partial(),
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid academic department id",
-    }),
+    id: z
+      .string({
+        error: "academic department id is required !",
+      })
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: "invalid academic department id !",
+      }),
   }),
 });
 
-const zodGetAcademicDepartmentValidationSchema = z.object({
+const zodAcademicDepartmentIdValidationSchema = z.object({
   params: z.object({
     id: z
       .string()
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic department id",
+        message: "invalid academic department id !",
       })
       .optional(),
   }),
@@ -37,5 +41,5 @@ const zodGetAcademicDepartmentValidationSchema = z.object({
 export const academicDepartmentValidations = {
   zodCreateAcademicDepartmentValidationSchema,
   zodUpdateAcademicDepartmentValidationSchema,
-  zodGetAcademicDepartmentValidationSchema,
+  zodAcademicDepartmentIdValidationSchema,
 };

@@ -2,8 +2,8 @@ import { catchAsync } from "../../utils/catchAsync";
 import { adminServices } from "./admin.service";
 
 const getSingleAdmin = catchAsync(async (req, res) => {
-  const { adminId } = req.params;
-  const result = await adminServices.getSingleAdminFromDB(adminId as string);
+  const { id } = req.params;
+  const result = await adminServices.getSingleAdminFromDB(id as string);
   res.status(200).json({
     success: true,
     message: "Single faculty retrive successfully",
@@ -21,9 +21,9 @@ const getAllAdmins = catchAsync(async (req, res) => {
 });
 
 const updateAdmin = catchAsync(async (req, res) => {
-  const { adminId } = req.params;
+  const { id } = req.params;
   const result = await adminServices.updateAdminIntoDB(
-    adminId as string,
+    id as string,
     req.body.admin,
   );
   res.status(200).json({
@@ -34,8 +34,8 @@ const updateAdmin = catchAsync(async (req, res) => {
 });
 
 const deleteAdmin = catchAsync(async (req, res) => {
-  const { adminId } = req.params;
-  const result = await adminServices.deleteAdminFromDB(adminId as string);
+  const { id } = req.params;
+  const result = await adminServices.deleteAdminFromDB(id as string);
   res.status(200).json({
     success: true,
     message: "Deleted admin successfully",

@@ -13,7 +13,9 @@ const createAcademicFaculty = catchAsync(async (req, res) => {
 });
 
 const getAllAcademicFaculties = catchAsync(async (req, res) => {
-  const result = await academicFacultyServices.getAcademicFacultiesFromDB();
+  const result = await academicFacultyServices.getAcademicFacultiesFromDB(
+    req.query,
+  );
   res.status(200).json({
     success: true,
     message: "Academic faculties retrived successfully",

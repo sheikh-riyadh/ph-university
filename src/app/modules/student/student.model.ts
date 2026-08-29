@@ -139,7 +139,10 @@ studentSchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
   const payload = this.getUpdate() as Partial<IStudent>;
 
-  const student = await Student.findOne(query);
+  const student = await Student.findOne({
+    ...query,
+    isDeleted: { $ne: true },
+  });
 
   if (!student) {
     throw new AppError(404, "student not found !");
@@ -166,6 +169,19 @@ studentSchema.pre("findOneAndUpdate", async function () {
   if (!isAcademicDepartmentExists) {
     throw new AppError(404, "academic department not found !");
   }
+});
+
+// Query Middleware
+studentSchema.pre("find", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+studentSchema.pre("findOne", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+studentSchema.pre("aggregate", function () {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
 export const Student = model<IStudent, StudentModelType>(

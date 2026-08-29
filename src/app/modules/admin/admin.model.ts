@@ -12,7 +12,7 @@ const adminSchema = new Schema<IAdmin>(
   },
   {
     timestamps: true,
-    versionKey:false
+    versionKey: false,
   },
 );
 
@@ -27,6 +27,19 @@ const adminCounterSchema = new Schema<IAdminCounter>({
     required: true,
     default: 0,
   },
+});
+
+// Query Middleware
+adminSchema.pre("find", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+adminSchema.pre("findOne", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+adminSchema.pre("aggregate", function () {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
 export const AdminCounter = model<IAdminCounter>(
