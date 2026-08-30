@@ -4,14 +4,13 @@ import { validateRequest } from "../../middlewares/validateRequest";
 import { studentValidations } from "./student.validation";
 const router = express.Router();
 
-// Will call controller function
-router.get(
-  "/",
-  validateRequest(studentValidations.zodStudentQueryValidationSchema),
-  StudentControllers.getAllStudents,
-);
+router.get("/", StudentControllers.getAllStudents);
 
-router.get("/:id", StudentControllers.getSingleStudent);
+router.get(
+  "/:id",
+  validateRequest(studentValidations.zodStudentIdValidationSchema),
+  StudentControllers.getSingleStudent,
+);
 
 router.patch(
   "/:id",
@@ -19,6 +18,10 @@ router.patch(
   StudentControllers.updateStudent,
 );
 
-router.delete("/:id", StudentControllers.deleteStudent);
+router.delete(
+  "/:id",
+  validateRequest(studentValidations.zodStudentIdValidationSchema),
+  StudentControllers.deleteStudent,
+);
 
 export const studentRoutes = router;

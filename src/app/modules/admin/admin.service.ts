@@ -10,8 +10,8 @@ import {
   excludedAdminFields,
 } from "./admin.constant";
 
-const getSingleAdminFromDB = async (adminId: string) => {
-  const result = await Admin.findById(adminId);
+const getSingleAdminFromDB = async (id: string) => {
+  const result = await Admin.findById(id);
   return result;
 };
 
@@ -27,7 +27,7 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-const updateAdminIntoDB = async (adminId: string, payload: Partial<IAdmin>) => {
+const updateAdminIntoDB = async (id: string, payload: Partial<IAdmin>) => {
   const { name, ...remaining } = payload;
 
   const modifiedUpdateData: Record<string, unknown> = {
@@ -40,18 +40,18 @@ const updateAdminIntoDB = async (adminId: string, payload: Partial<IAdmin>) => {
     });
   }
 
-  const result = await Admin.findByIdAndUpdate(adminId, modifiedUpdateData);
+  const result = await Admin.findByIdAndUpdate(id, modifiedUpdateData);
   return result;
 };
 
-const deleteAdminFromDB = async (adminId: string) => {
+const deleteAdminFromDB = async (id: string) => {
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id: adminId },
+    const deletedUser = await User.findByIdAndUpdate(
+      id,
       {
         isDeleted: true,
       },
@@ -66,7 +66,7 @@ const deleteAdminFromDB = async (adminId: string) => {
     }
 
     const deletedAdmin = await Admin.findOneAndUpdate(
-      { id: adminId },
+      { user: deletedUser._id },
       {
         isDeleted: true,
       },

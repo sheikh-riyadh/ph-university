@@ -1,8 +1,6 @@
 import z from "zod";
 import {
   personValidationSchema,
-  zodBloodGroupSchema,
-  zodGenderValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
 import mongoose from "mongoose";
@@ -59,21 +57,16 @@ const zodUpdateStudentValidationSchema = z.object({
   }),
 });
 
-const zodStudentQueryValidationSchema = z.object({
-  query: z.object({
-    search: z.string().trim().min(1).max(100).optional(),
-    email: z.email().optional(),
-    fields: z.string().optional(),
-    bloodGroup: zodBloodGroupSchema.optional(),
-    gender: zodGenderValidationSchema.optional(),
-    sort: z.string().default("-createdAt"),
-    limit: z.coerce.number().int().min(1).max(100).default(10),
-    page: z.coerce.number().int().min(1).default(1),
+const zodStudentIdValidationSchema = z.object({
+  params: z.object({
+    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "invalid student id !",
+    }),
   }),
 });
 
 export const studentValidations = {
   zodCreateStudentValidationSchema,
   zodUpdateStudentValidationSchema,
-  zodStudentQueryValidationSchema,
+  zodStudentIdValidationSchema,
 };

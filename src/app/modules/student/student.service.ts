@@ -11,11 +11,8 @@ import {
 import { QueryBuilder } from "../../builders/QueryBuilder";
 
 const createStudentIntoDB = async (payload: IStudent) => {
-  const isExists = await Student.isStudentExists(payload.id);
-  if (!isExists) {
-    const result = await Student.create(payload);
-    return result;
-  }
+  const result = await Student.create(payload);
+  return result;
 };
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
@@ -88,13 +85,13 @@ const deleteStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const deletedUser = await User.findByIdAndUpdate(
+      id,
       {
         isDeleted: true,
       },
       {
-        new: true,
+        returnDocument: "after",
         session,
       },
     );
@@ -103,7 +100,7 @@ const deleteStudentFromDB = async (id: string) => {
       throw new AppError(400, "user not found or already deleted !");
     }
     const deletedStudent = await Student.findOneAndUpdate(
-      { id },
+      { user: deletedUser._id },
       { isDeleted: true },
       { returnDocument: "after", session },
     );

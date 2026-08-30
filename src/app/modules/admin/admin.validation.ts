@@ -38,7 +38,9 @@ const zodUpdateAdminValidationShema = z.object({
 
 const zodAdminIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().max(4, "Admin id is required"),
+    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "invalid admin id !",
+    }),
   }),
 });
 

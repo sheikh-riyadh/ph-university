@@ -38,7 +38,9 @@ const zodUpdateFacultyValidationSchema = z.object({
 
 const zodFacultyIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().max(6, "Faculty id is required"),
+    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: "invalid faculty id !",
+    }),
   }),
 });
 

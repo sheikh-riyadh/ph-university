@@ -26,17 +26,14 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-const getSingleFacultyFromDB = async (facultyId: string) => {
-  const result = await Faculty.findById(facultyId)
+const getSingleFacultyFromDB = async (id: string) => {
+  const result = await Faculty.findById(id)
     .populate("academicFaculty")
     .populate("academicDepartment");
   return result;
 };
 
-const updateFacultyFromDB = async (
-  facultyId: string,
-  payload: Partial<IFaculty>,
-) => {
+const updateFacultyFromDB = async (id: string, payload: Partial<IFaculty>) => {
   const { name, ...remainingFacultyData } = payload;
 
   const modifiedUpdateData: Record<string, unknown> = {
@@ -49,23 +46,19 @@ const updateFacultyFromDB = async (
     });
   }
 
-  const result = await Faculty.findByIdAndUpdate(
-    facultyId,
-    modifiedUpdateData,
-    {
-      returnDocument: "after",
-    },
-  );
+  const result = await Faculty.findByIdAndUpdate(id, modifiedUpdateData, {
+    returnDocument: "after",
+  });
   return result;
 };
 
-const deleteFacultyFromDB = async (facultyId: string) => {
+const deleteFacultyFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id: facultyId },
+    const deletedUser = await User.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { returnDocument: "after", session },
     );
@@ -75,7 +68,7 @@ const deleteFacultyFromDB = async (facultyId: string) => {
     }
 
     const deletedFaculty = await Faculty.findOneAndUpdate(
-      { id: facultyId },
+      { user: deletedUser._id },
       { isDeleted: true },
       { returnDocument: "after", session },
     );

@@ -6,15 +6,21 @@ import { facultyValidations } from "./faculty.validation";
 const router = express.Router();
 
 router.get("/", facultyControllers.getAllFaculties);
-router.get("/:facultyId", facultyControllers.getSingleFaculty);
+
+router.get(
+  "/:id",
+  validateRequest(facultyValidations.zodFacultyIdValidationSchema),
+  facultyControllers.getSingleFaculty,
+);
+
 router.patch(
-  "/:facultyId",
+  "/:id",
   validateRequest(facultyValidations.zodUpdateFacultyValidationSchema),
   facultyControllers.updateFaculty,
 );
 
 router.delete(
-  "/:facultyId",
+  "/:id",
   validateRequest(facultyValidations.zodFacultyIdValidationSchema),
   facultyControllers.deleteFaculty,
 );
