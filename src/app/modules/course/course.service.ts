@@ -12,8 +12,11 @@ const createCourseIntoDB = async (payload: ICourse) => {
   return result;
 };
 
-const getAllCoursesFrom = async (query: Record<string, unknown>) => {
-  const courseQuery = new QueryBuilder(Course.find(), query)
+const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
+  const courseQuery = new QueryBuilder(
+    Course.find().populate("preRequisiteCourses.course"),
+    query,
+  )
     .search(allowedCouseSearchableFields)
     .filter(allowedCourseFilterFields, excludedCourseFields)
     .sort()
@@ -25,8 +28,24 @@ const getAllCoursesFrom = async (query: Record<string, unknown>) => {
 };
 
 const getSingleCourseFromDB = async (id: string) => {
-  const result = await Course.findById(id);
+  const result = await Course.findById(id).populate(
+    "preRequisiteCourses.course",
+  );
   return result;
+};
+
+const updateCourseFromDB = async (id: string, payload: Partial<ICourse>) => {
+  const { preRequisiteCourses, ...remainingCourseData } = payload;
+
+  const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
+    id,
+    remainingCourseData,
+    {
+      returnDocument: "after",
+    },
+  );
+
+  return updatedBasicCourseInfo;
 };
 
 const deleteCourseFromDB = async (id: string) => {
@@ -46,7 +65,8 @@ const deleteCourseFromDB = async (id: string) => {
 
 export const courseServices = {
   createCourseIntoDB,
-  getAllCoursesFrom,
+  getAllCoursesFromDB,
   getSingleCourseFromDB,
+  updateCourseFromDB,
   deleteCourseFromDB,
 };

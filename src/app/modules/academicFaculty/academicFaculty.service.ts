@@ -31,7 +31,7 @@ const getSingleAcademicFacultyFromDB = async (id: string) => {
 
 const updateSingleAcademicFacultyFromDB = async (
   id: string,
-  payload: IAcademicFaculty,
+  payload: Partial<IAcademicFaculty>,
 ) => {
   const result = await AcademicFaculty.findByIdAndUpdate(id, payload, {
     returnDocument: "after",

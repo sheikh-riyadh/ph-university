@@ -5,7 +5,7 @@ const preRequisiteCoursesSchema = new Schema<IPreRequisiteCourses>(
   {
     course: {
       type: Schema.Types.ObjectId,
-      ref: "course",
+      ref: "Course",
     },
     isDeleted: {
       type: Boolean,
@@ -52,5 +52,18 @@ const courseSchema = new Schema<ICourse>(
     versionKey: false,
   },
 );
+
+// Query Middleware
+courseSchema.pre("find", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+courseSchema.pre("findOne", function () {
+  this.find({ isDeleted: { $ne: true } });
+});
+
+courseSchema.pre("aggregate", function () {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+});
 
 export const Course = model<ICourse>("Course", courseSchema);
