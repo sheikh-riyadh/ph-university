@@ -33,6 +33,7 @@ const courseSchema = new Schema<ICourse>(
     code: {
       type: Number,
       required: true,
+      unique: true,
     },
     credits: {
       type: Number,

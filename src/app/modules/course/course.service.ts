@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { QueryBuilder } from "../../builders/QueryBuilder";
 import {
   allowedCourseFilterFields,
@@ -6,6 +7,8 @@ import {
 } from "./course.constant";
 import type { ICourse } from "./course.interface";
 import { Course } from "./course.model";
+import { updatePreRequisiteCourse } from "./course.utils";
+import { AppError } from "../../errors/appError";
 
 const createCourseIntoDB = async (payload: ICourse) => {
   const result = await Course.create(payload);
@@ -37,15 +40,39 @@ const getSingleCourseFromDB = async (id: string) => {
 const updateCourseFromDB = async (id: string, payload: Partial<ICourse>) => {
   const { preRequisiteCourses, ...remainingCourseData } = payload;
 
-  const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
-    id,
-    remainingCourseData,
-    {
-      returnDocument: "after",
-    },
-  );
+  const session = await mongoose.startSession();
 
-  return updatedBasicCourseInfo;
+  try {
+    session.startTransaction();
+
+    // Transaction-1
+    const basicUpdatedInfo = await Course.findByIdAndUpdate(
+      id,
+      remainingCourseData,
+      {
+        returnDocument: "after",
+        session,
+      },
+    );
+
+    if (!basicUpdatedInfo) {
+      throw new AppError(400, "failed to update basic info !");
+    }
+
+    const result = await updatePreRequisiteCourse(
+      id,
+      preRequisiteCourses ?? [],
+      session,
+    );
+
+    await session.commitTransaction();
+    return result;
+  } catch {
+    await session.abortTransaction();
+    throw new AppError(400, "failed to update course !");
+  } finally {
+    await session.endSession();
+  }
 };
 
 const deleteCourseFromDB = async (id: string) => {
