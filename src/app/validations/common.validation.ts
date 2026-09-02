@@ -1,5 +1,12 @@
 import z from "zod";
 import { BloodGroup, Gender } from "../interfaces/common.interface";
+import mongoose from "mongoose";
+
+export const zodMongooseObjectIdValidationSchema = z
+  .string()
+  .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+    message: "invalid objectId !",
+  });
 
 export const zodNameValidationSchema = z.object({
   firstName: z.string({

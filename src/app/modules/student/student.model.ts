@@ -94,26 +94,6 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
   },
 );
 
-// Student counter schema
-const studentCounterSchema = new Schema<IStudentCounter>(
-  {
-    key: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
-    sequence: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-  },
-  {
-    timestamps: true,
-  },
-);
-
 // Custom static method
 studentSchema.static("isStudentExists", async function (id: string) {
   const isExists = await this.exists({ id });
@@ -187,6 +167,26 @@ studentSchema.pre("aggregate", function () {
 export const Student = model<IStudent, StudentModelType>(
   "Student",
   studentSchema,
+);
+
+// Student counter schema
+const studentCounterSchema = new Schema<IStudentCounter>(
+  {
+    key: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    sequence: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
 
 export const StudentCounter = model<IStudentCounter>(

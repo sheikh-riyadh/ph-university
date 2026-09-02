@@ -24,6 +24,14 @@ router.patch(
   courseControllers.updateCourse,
 );
 
+router.put(
+  "/:courseId/assign-faculties",
+  validateRequest(
+    courseValidations.zodAssignFacultiesWithCourseValidationSchema,
+  ),
+  courseControllers.assignFacultiesWithCourse,
+);
+
 router.delete(
   "/:id",
   validateRequest(courseValidations.zodCourseIdValidationSchema),

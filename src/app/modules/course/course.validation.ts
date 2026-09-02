@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
 import z from "zod";
+import { zodMongooseObjectIdValidationSchema } from "../../validations/common.validation";
 
 const preRequisiteCoursesValidationShema = z.object({
-  course: z.string().optional(),
+  course: zodMongooseObjectIdValidationSchema.optional(),
   isDeleted: z.boolean().default(false).optional(),
 });
 
@@ -25,9 +25,7 @@ const zodCreateCourseValidationSchema = z.object({
 
 const zodCourseIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid course id !",
-    }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
@@ -36,9 +34,18 @@ const zodUpdateCourseValidationShema = z.object({
     course: courseValidationSchema.partial(),
   }),
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid course id !",
-    }),
+    id: zodMongooseObjectIdValidationSchema,
+  }),
+});
+
+const zodAssignFacultiesWithCourseValidationSchema = z.object({
+  body: z.object({
+    faculties: z
+      .array(zodMongooseObjectIdValidationSchema)
+      .min(1, "At least one faculty is required"),
+  }),
+  params: z.object({
+    courseId: zodMongooseObjectIdValidationSchema,
   }),
 });
 
@@ -46,4 +53,5 @@ export const courseValidations = {
   zodCreateCourseValidationSchema,
   zodCourseIdValidationSchema,
   zodUpdateCourseValidationShema,
+  zodAssignFacultiesWithCourseValidationSchema,
 };

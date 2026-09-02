@@ -5,8 +5,8 @@ import {
   allowedCouseSearchableFields,
   excludedCourseFields,
 } from "./course.constant";
-import type { ICourse } from "./course.interface";
-import { Course } from "./course.model";
+import type { IAssignFacultiesWithCourse, ICourse } from "./course.interface";
+import { Course, CourseFaculty } from "./course.model";
 import { updatePreRequisiteCourse } from "./course.utils";
 import { AppError } from "../../errors/appError";
 
@@ -75,6 +75,24 @@ const updateCourseFromDB = async (id: string, payload: Partial<ICourse>) => {
   }
 };
 
+const assignFacultiesWithCourseIntoDB = async (
+  courseId: string,
+  payload: Partial<IAssignFacultiesWithCourse>,
+) => {
+  const result = await CourseFaculty.findOneAndUpdate(
+    { course: courseId },
+    {
+      $addToSet: { faculties: { $each: payload } },
+    },
+    {
+      upsert: true,
+      returnDocument: "after",
+    },
+  );
+
+  return result;
+};
+
 const deleteCourseFromDB = async (id: string) => {
   const result = await Course.findByIdAndUpdate(
     id,
@@ -96,4 +114,5 @@ export const courseServices = {
   getSingleCourseFromDB,
   updateCourseFromDB,
   deleteCourseFromDB,
+  assignFacultiesWithCourseIntoDB,
 };

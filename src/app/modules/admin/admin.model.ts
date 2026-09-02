@@ -16,19 +16,6 @@ const adminSchema = new Schema<IAdmin>(
   },
 );
 
-const adminCounterSchema = new Schema<IAdminCounter>({
-  key: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  sequence: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-});
-
 // Query Middleware
 adminSchema.pre("find", function () {
   this.find({ isDeleted: { $ne: true } });
@@ -42,9 +29,22 @@ adminSchema.pre("aggregate", function () {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
+export const Admin = model<IAdmin>("Admin", adminSchema);
+
+const adminCounterSchema = new Schema<IAdminCounter>({
+  key: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  sequence: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+});
+
 export const AdminCounter = model<IAdminCounter>(
   "AdminCounter",
   adminCounterSchema,
 );
-
-export const Admin = model<IAdmin>("Admin", adminSchema);

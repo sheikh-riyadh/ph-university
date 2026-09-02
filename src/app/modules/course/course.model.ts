@@ -1,5 +1,9 @@
 import { model, Schema } from "mongoose";
-import type { ICourse, IPreRequisiteCourses } from "./course.interface";
+import type {
+  IAssignFacultiesWithCourse,
+  ICourse,
+  IPreRequisiteCourses,
+} from "./course.interface";
 
 const preRequisiteCoursesSchema = new Schema<IPreRequisiteCourses>(
   {
@@ -68,3 +72,21 @@ courseSchema.pre("aggregate", function () {
 });
 
 export const Course = model<ICourse>("Course", courseSchema);
+
+const assignFacultiesWithCourseSchema = new Schema<IAssignFacultiesWithCourse>({
+  course: {
+    type: Schema.Types.ObjectId,
+    ref: "Course",
+    required: true,
+    unique: true,
+  },
+  faculties: Array<{
+    type: Schema.Types.ObjectId;
+    ref: "Faculty";
+  }>,
+});
+
+export const CourseFaculty = model<IAssignFacultiesWithCourse>(
+  "CourseFaculty",
+  assignFacultiesWithCourseSchema,
+);

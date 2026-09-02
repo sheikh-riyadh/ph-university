@@ -27,26 +27,6 @@ const facultySchema = new Schema<IFaculty>(
   },
 );
 
-export const facultyCounterSchema = new Schema<IFacultyCounter>(
-  {
-    key: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
-    sequence: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  },
-);
-
 facultySchema.pre("save", async function () {
   const isAcademicFacultyExists = await AcademicFaculty.isAcademicFacultExists(
     this.academicFaculty,
@@ -99,9 +79,29 @@ facultySchema.pre("aggregate", function () {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 });
 
+export const Faculty = model<IFaculty>("Faculty", facultySchema);
+
+export const facultyCounterSchema = new Schema<IFacultyCounter>(
+  {
+    key: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    sequence: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  },
+);
+
 export const FacultyCounter = model<IFacultyCounter>(
   "FacultyCounter",
   facultyCounterSchema,
 );
-
-export const Faculty = model<IFaculty>("Faculty", facultySchema);
