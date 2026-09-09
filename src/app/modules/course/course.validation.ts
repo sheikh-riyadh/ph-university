@@ -38,7 +38,7 @@ const zodUpdateCourseValidationShema = z.object({
   }),
 });
 
-const zodAssignFacultiesWithCourseValidationSchema = z.object({
+const zodFacultiesWithCourseValidationSchema = z.object({
   body: z.object({
     faculties: z
       .array(zodMongooseObjectIdValidationSchema)
@@ -53,5 +53,5 @@ export const courseValidations = {
   zodCreateCourseValidationSchema,
   zodCourseIdValidationSchema,
   zodUpdateCourseValidationShema,
-  zodAssignFacultiesWithCourseValidationSchema,
+  zodFacultiesWithCourseValidationSchema,
 };
