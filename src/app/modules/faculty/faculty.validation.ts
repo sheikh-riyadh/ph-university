@@ -1,6 +1,7 @@
 import z from "zod";
 import {
   personValidationSchema,
+  zodMongooseObjectIdValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
 import mongoose from "mongoose";
@@ -38,9 +39,7 @@ const zodUpdateFacultyValidationSchema = z.object({
 
 const zodFacultyIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid faculty id !",
-    }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
