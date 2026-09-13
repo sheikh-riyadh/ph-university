@@ -13,16 +13,14 @@ const semesterRegistrationValidation = z.object({
   endDate: z.string({
     error: "invalid end date !",
   }),
-  startTime: z.string({
-    error: "invalid start time !",
-  }),
-  endTime: z.string({
-    error: "invalid end time !",
-  }),
+  minCredit: z.number().optional(),
+  maxCredit: z.number().optional(),
 });
 
 const zodCreateSemesterRegistrationValidationSchema = z.object({
-  body: semesterRegistrationValidation,
+  body: z.object({
+    semesterRegistrtion: semesterRegistrationValidation,
+  }),
 });
 
 const zodSemesterRegistrationIdValidationSchema = z.object({
@@ -32,7 +30,9 @@ const zodSemesterRegistrationIdValidationSchema = z.object({
 });
 
 const zodUpdateSemesterRegistrationValidationSchema = z.object({
-  body: semesterRegistrationValidation.partial(),
+  body: z.object({
+    semesterRegistrtion: semesterRegistrationValidation.partial(),
+  }),
   params: z.object({
     id: zodMongooseObjectIdValidationSchema,
   }),

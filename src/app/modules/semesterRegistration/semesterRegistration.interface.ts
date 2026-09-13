@@ -11,8 +11,6 @@ export interface ISemesterRegistration {
   status: SemesterRegistrationStatus;
   startDate: Date;
   endDate: Date;
-  startTime: Date;
-  endTime: Date;
-  mixCredit?: number;
+  minCredit?: number;
   maxCredit?: number;
 }

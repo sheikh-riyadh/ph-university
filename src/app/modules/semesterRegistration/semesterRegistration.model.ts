@@ -6,43 +6,77 @@ import {
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { AppError } from "../../errors/appError";
 
-const semesterRegistrationSchema = new Schema<ISemesterRegistration>({
-  academicSemester: {
-    type: Schema.Types.ObjectId,
-    ref: "AcademicSemester",
-    unique: true,
-    required: true,
+const semesterRegistrationSchema = new Schema<ISemesterRegistration>(
+  {
+    academicSemester: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicSemester",
+      unique: true,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(SemesterRegistrationStatus),
+      default: SemesterRegistrationStatus.UPCOMING,
+      required: true,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    minCredit: {
+      type: Number,
+      default: 3,
+    },
+    maxCredit: {
+      type: Number,
+      default: 15,
+    },
   },
-  status: {
-    type: String,
-    enum: Object.values(SemesterRegistrationStatus),
-    required: true,
+  {
+    timestamps: true,
+    versionKey: false,
   },
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
-  startTime: {
-    type: Date,
-    required: true,
-  },
-  endTime: {
-    type: Date,
-    required: true,
-  },
-});
+);
 
 semesterRegistrationSchema.pre("save", async function () {
-  const isAcademicSemesterExists = await AcademicSemester.exists({
-    id: this.academicSemester,
+  const isAcademicSemesterExists = await AcademicSemester.findOne({
+    _id: this.academicSemester,
   });
 
   if (!isAcademicSemesterExists) {
     throw new AppError(404, "academic semester not found !");
+  }
+
+  const isAcademicSemesterRegistrationAlreadyExists =
+    await SemesterRegistration.findOne({
+      academicSemester: this.academicSemester,
+    });
+
+  if (isAcademicSemesterRegistrationAlreadyExists) {
+    throw new AppError(
+      409,
+      `${isAcademicSemesterExists.name} already registered !`,
+    );
+  }
+
+  const isAnyUpcomingOrOnGoingSemesterRegistrationExists =
+    await SemesterRegistration.findOne({
+      $or: [
+        { status: SemesterRegistrationStatus.UPCOMING },
+        { status: SemesterRegistrationStatus.ONGOING },
+      ],
+    });
+
+  if (isAnyUpcomingOrOnGoingSemesterRegistrationExists) {
+    throw new AppError(
+      400,
+      `there is already a ${this.status} semester registration exists`,
+    );
   }
 });
 
