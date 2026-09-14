@@ -47,7 +47,9 @@ const updateSemesterRegistrationFromDB = async (
   id: string,
   payload: Partial<ISemesterRegistration>,
 ) => {
-  const result = await SemesterRegistration.findByIdAndUpdate(id, payload);
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload, {
+    returnDocument: "after",
+  });
   return result;
 };
 
