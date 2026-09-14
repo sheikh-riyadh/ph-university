@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import z from "zod";
+import { zodMongooseObjectIdValidationSchema } from "../../validations/common.validation";
 
 const academicDepartmentValidationSchema = z.object({
   name: z.string({
@@ -17,24 +17,13 @@ const zodCreateAcademicDepartmentValidationSchema = z.object({
 const zodUpdateAcademicDepartmentValidationSchema = z.object({
   body: academicDepartmentValidationSchema.partial(),
   params: z.object({
-    id: z
-      .string({
-        error: "academic department id is required !",
-      })
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic department id !",
-      }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
 const zodAcademicDepartmentIdValidationSchema = z.object({
   params: z.object({
-    id: z
-      .string()
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic department id !",
-      })
-      .optional(),
+    id: zodMongooseObjectIdValidationSchema.optional(),
   }),
 });
 

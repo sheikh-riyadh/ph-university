@@ -1,6 +1,6 @@
 import z from "zod";
 import { Codes, Months, Name } from "./academicSemester.interface";
-import mongoose from "mongoose";
+import { zodMongooseObjectIdValidationSchema } from "../../validations/common.validation";
 
 const academicSemesterValidationSchema = z.object({
   name: z.enum(Name, {
@@ -27,24 +27,13 @@ const zodCreateAcademicSemesterValidationSchema = z.object({
 const zodUpdateAcademicSemesterValidationSchema = z.object({
   body: academicSemesterValidationSchema.partial(),
   params: z.object({
-    id: z
-      .string({
-        error: "academic semester id is required !",
-      })
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic semester id !",
-      }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
 const zodAcademicSemesterIdValidationSchema = z.object({
   params: z.object({
-    id: z
-      .string()
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid academic semester id !",
-      })
-      .optional(),
+    id: zodMongooseObjectIdValidationSchema.optional(),
   }),
 });
 

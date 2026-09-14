@@ -19,7 +19,7 @@ const semesterRegistrationValidation = z.object({
 
 const zodCreateSemesterRegistrationValidationSchema = z.object({
   body: z.object({
-    semesterRegistrtion: semesterRegistrationValidation,
+    semesterRegistration: semesterRegistrationValidation,
   }),
 });
 
@@ -31,7 +31,7 @@ const zodSemesterRegistrationIdValidationSchema = z.object({
 
 const zodUpdateSemesterRegistrationValidationSchema = z.object({
   body: z.object({
-    semesterRegistrtion: semesterRegistrationValidation.partial(),
+    semesterRegistration: semesterRegistrationValidation.partial(),
   }),
   params: z.object({
     id: zodMongooseObjectIdValidationSchema,

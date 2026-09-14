@@ -1,9 +1,9 @@
 import z from "zod";
 import {
   personValidationSchema,
+  zodMongooseObjectIdValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
-import mongoose from "mongoose";
 
 const adminValidationSchema = z.object({
   ...personValidationSchema,
@@ -28,19 +28,13 @@ const zodUpdateAdminValidationShema = z.object({
       .partial(),
   }),
   params: z.object({
-    id: z
-      .string("admin id is required !")
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid admin id !",
-      }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
 const zodAdminIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid admin id !",
-    }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 

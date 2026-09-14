@@ -56,10 +56,10 @@ facultySchema.pre("findOneAndUpdate", async function () {
     throw new AppError(404, "faculty not found !");
   }
 
-  const academicFacultyId = payload.academicFaculty || faculty.academicFaculty;
+  const academicFacultyId = payload?.academicFaculty ?? faculty.academicFaculty;
 
   const academicDepartmentId =
-    payload.academicDepartment || faculty.academicDepartment;
+    payload?.academicDepartment || faculty.academicDepartment;
 
   await AcademicFaculty.isAcademicFacultExists(academicFacultyId);
 

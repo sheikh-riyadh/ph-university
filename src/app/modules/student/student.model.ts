@@ -132,7 +132,7 @@ studentSchema.pre("findOneAndUpdate", async function () {
     payload?.academicDepartment ?? student.academicDepartment;
 
   const academicSemester =
-    payload.admissionSemester ?? student.admissionSemester;
+    payload?.admissionSemester ?? student.admissionSemester;
 
   const isAcademicDepartmentExists = await AcademicDepartment.exists({
     _id: academicDepartment,

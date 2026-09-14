@@ -53,7 +53,8 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function () {
     throw new AppError(404, "academic department not found !");
   }
 
-  const academicFaculty = payload.academicFaculty ?? department.academicFaculty;
+  const academicFaculty =
+    payload?.academicFaculty ?? department.academicFaculty;
 
   const isFacultyExists = await AcademicFaculty.exists({
     _id: academicFaculty,

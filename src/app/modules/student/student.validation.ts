@@ -1,9 +1,9 @@
 import z from "zod";
 import {
   personValidationSchema,
+  zodMongooseObjectIdValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
-import mongoose from "mongoose";
 
 export const zodGuardianValidationSchema = z.object({
   fatherName: z.string(),
@@ -47,21 +47,13 @@ const zodUpdateStudentValidationSchema = z.object({
       .partial(),
   }),
   params: z.object({
-    id: z
-      .string({
-        error: "student id is required !",
-      })
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid student id !",
-      }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
 const zodStudentIdValidationSchema = z.object({
   params: z.object({
-    id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: "invalid student id !",
-    }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 

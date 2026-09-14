@@ -82,15 +82,25 @@ semesterRegistrationSchema.pre("save", async function () {
 
 semesterRegistrationSchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
-  const updatedData = this.getUpdate() as Partial<ISemesterRegistration>;
+  const payload = this.getUpdate() as Partial<ISemesterRegistration>;
 
-  const isSemesterRegistrationExists = await this.model.findOne(query);
-  if (!isSemesterRegistrationExists) {
+  const semesterRegistration = await this.model.findOne(query);
+  if (!semesterRegistration) {
     throw new AppError(404, "semester registration not found !");
   }
 
+  if (semesterRegistration.status === SemesterRegistrationStatus.ENDED) {
+    throw new AppError(
+      400,
+      `this semester registration already ${semesterRegistration.status} !`,
+    );
+  }
+
+  const academicSemesterId =
+    payload?.academicSemester ?? semesterRegistration.academicSemester;
+
   const academicSemester = await AcademicSemester.findOne({
-    _id: updatedData.academicSemester,
+    _id: academicSemesterId,
   });
 
   if (!academicSemester) {

@@ -4,7 +4,6 @@ import {
   zodMongooseObjectIdValidationSchema,
   zodNameValidationSchema,
 } from "../../validations/common.validation";
-import mongoose from "mongoose";
 
 const facultyValidationSchema = z.object({
   ...personValidationSchema,
@@ -29,11 +28,7 @@ const zodUpdateFacultyValidationSchema = z.object({
       .partial(),
   }),
   params: z.object({
-    id: z
-      .string("faculty id is required !")
-      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: "invalid faculty id !",
-      }),
+    id: zodMongooseObjectIdValidationSchema,
   }),
 });
 
