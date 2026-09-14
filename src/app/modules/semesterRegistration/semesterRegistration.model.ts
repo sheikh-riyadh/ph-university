@@ -106,6 +106,26 @@ semesterRegistrationSchema.pre("findOneAndUpdate", async function () {
   if (!academicSemester) {
     throw new AppError(404, "academic semester not found !");
   }
+
+  if (
+    semesterRegistration.status === SemesterRegistrationStatus.UPCOMING &&
+    payload?.status === SemesterRegistrationStatus.ENDED
+  ) {
+    throw new AppError(
+      400,
+      `you can not directly change status from ${semesterRegistration.status} to ${payload?.status} !`,
+    );
+  }
+
+  if (
+    semesterRegistration.status === SemesterRegistrationStatus.ONGOING &&
+    payload.status === SemesterRegistrationStatus.UPCOMING
+  ) {
+    throw new AppError(
+      400,
+      `you can not directly change status from ${semesterRegistration.status} to ${payload.status}`,
+    );
+  }
 });
 
 export const SemesterRegistration = model<ISemesterRegistration>(
