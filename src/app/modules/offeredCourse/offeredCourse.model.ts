@@ -44,11 +44,13 @@ const offeredCourseSchema = new Schema<IOfferedCourse>(
       unique: true,
       required: true,
     },
-    days: {
-      type: String,
-      enum: Object.values(Days),
-      required: true,
-    },
+    days: [
+      {
+        type: String,
+        enum: Object.values(Days),
+        required: true,
+      },
+    ],
     startTime: {
       type: String,
       required: true,

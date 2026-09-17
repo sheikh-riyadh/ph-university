@@ -4,7 +4,6 @@ import { Days } from "./offeredCourse.interface";
 
 const offeredCourseValidationSchema = z.object({
   semesterRegistration: zodMongooseObjectIdValidationSchema,
-  academicSemester: zodMongooseObjectIdValidationSchema,
   academicFaculty: zodMongooseObjectIdValidationSchema,
   academicDepartment: zodMongooseObjectIdValidationSchema,
   course: zodMongooseObjectIdValidationSchema,
@@ -15,9 +14,11 @@ const offeredCourseValidationSchema = z.object({
   section: z.number({
     error: "section is required !",
   }),
-  days: z.enum(Days, {
-    error: "please provide valid day !",
-  }),
+  days: z.array(
+    z.enum(Days, {
+      error: "please provide valid day !",
+    }),
+  ),
   startTime: z.string({
     error: "start time is required !",
   }),
