@@ -56,6 +56,13 @@ const createOfferedCourseIntoDB = async (payload: IOfferedCourse) => {
     throw new AppError(404, "faculty not found !");
   }
 
+  if (!academicDepartmentExists.academicFaculty.equals(academicFaculty)) {
+    throw new AppError(
+      409,
+      `This ${academicDepartmentExists.name} does not belong to ${academicFacultyExists.name}`,
+    );
+  }
+
   const academicSemester = semesterRegistrationExists.academicSemester;
 
   const result = await OfferedCourse.create({ ...payload, academicSemester });
