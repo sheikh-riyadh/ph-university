@@ -6,7 +6,6 @@ const offeredCourseSchema = new Schema<IOfferedCourse>(
     semesterRegistration: {
       type: Schema.Types.ObjectId,
       ref: "SemesterRegistration",
-      unique: true,
       required: true,
     },
     academicSemester: {
@@ -27,7 +26,6 @@ const offeredCourseSchema = new Schema<IOfferedCourse>(
     course: {
       type: Schema.Types.ObjectId,
       ref: "Course",
-      unique: true,
       required: true,
     },
     faculty: {
