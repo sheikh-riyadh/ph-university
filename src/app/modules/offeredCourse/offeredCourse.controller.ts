@@ -36,10 +36,15 @@ const getSingleOfferedCourse = catchAsync(async (req, res) => {
 });
 
 const updateOfferedCourse = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await offeredCourseServices.updateOfferedCourseFromDB(
+    id as string,
+    req.body.offeredCourse,
+  );
   res.status(200).json({
     success: true,
     message: "update offered course successfully !",
-    data: "",
+    data: result,
   });
 });
 

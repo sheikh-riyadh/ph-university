@@ -72,7 +72,14 @@ const zodOfferedCourseIdValidationSchema = z.object({
 
 const zodUpdateOfferedCourseValidationSchema = z.object({
   body: z.object({
-    offeredCourse: z.object({ ...offeredCourseValidationSchema }).partial(),
+    offeredCourse: z.object({
+      ...offeredCourseValidationSchema,
+      semesterRegistration: zodMongooseObjectIdValidationSchema.optional(),
+      academicFaculty: zodMongooseObjectIdValidationSchema.optional(),
+      academicDepartment: zodMongooseObjectIdValidationSchema.optional(),
+      course: zodMongooseObjectIdValidationSchema.optional(),
+      section: z.number().optional(),
+    }),
   }),
   params: z.object({
     id: zodMongooseObjectIdValidationSchema,
