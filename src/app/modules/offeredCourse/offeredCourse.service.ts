@@ -124,16 +124,16 @@ const updateOfferedCourseFromDB = async (
 ) => {
   const { faculty, course, days, startTime, endTime } = payload;
 
-  const isFacultyExists = await Faculty.findById(faculty);
-
-  if (!isFacultyExists) {
-    throw new AppError(404, "faculty not found !");
-  }
-
   const isOfferedCourseExists = await OfferedCourse.findById(id);
 
   if (!isOfferedCourseExists) {
     throw new AppError(404, "offered course not found !");
+  }
+
+  const isFacultyExists = await Faculty.findById(faculty);
+
+  if (!isFacultyExists) {
+    throw new AppError(404, "faculty not found !");
   }
 
   const semesterRegistration = await SemesterRegistration.findById(
@@ -161,7 +161,9 @@ const updateOfferedCourseFromDB = async (
     );
   }
 
-  const result = await OfferedCourse.findByIdAndUpdate(id, payload);
+  const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
+    returnDocument: "after",
+  });
   return result;
 };
 
