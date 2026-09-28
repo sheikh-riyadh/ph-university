@@ -50,9 +50,22 @@ const updateOfferedCourse = catchAsync(async (req, res) => {
   });
 });
 
+const deleteOfferedCourse = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await offeredCourseServices.deleteOfferedCourseFromDB(
+    id as string,
+  );
+  res.status(200).json({
+    success: true,
+    message: "offered course deleted successfully !",
+    data: result,
+  });
+});
+
 export const offeredCourseControllers = {
   createOfferedCourse,
   getAllOfferedCourses,
   getSingleOfferedCourse,
   updateOfferedCourse,
+  deleteOfferedCourse,
 };

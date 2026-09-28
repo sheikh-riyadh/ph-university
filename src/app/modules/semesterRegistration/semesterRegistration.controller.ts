@@ -4,7 +4,7 @@ import { semesterRegistrationServices } from "./semesterRegistration.service";
 const createSemesterRegistration = catchAsync(async (req, res) => {
   const result =
     await semesterRegistrationServices.createSemesterRegistrationIntoDB(
-      req.body.semesterRegistrtion,
+      req.body.semesterRegistration,
     );
   res.status(201).json({
     success: true,
@@ -52,9 +52,23 @@ const updateSemesterRegistration = catchAsync(async (req, res) => {
   });
 });
 
+const deleteSemesterRegistration = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result =
+    await semesterRegistrationServices.deleteSemesterRegistrationFromDB(
+      id as string,
+    );
+  res.status(200).json({
+    success: true,
+    message: "deleted semester registration successfully !",
+    data: result,
+  });
+});
+
 export const semesterRegistrationControllers = {
   createSemesterRegistration,
   getAllSemesterRegistration,
   getSingleSemesterRegistration,
   updateSemesterRegistration,
+  deleteSemesterRegistration,
 };

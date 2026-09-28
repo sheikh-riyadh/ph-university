@@ -112,6 +112,9 @@ const getAllOfferedCourseFromDB = async (query: Record<string, unknown>) => {
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
   const result = await OfferedCourse.findById(id);
+  if (!result) {
+    throw new AppError(404, "offered course not found !");
+  }
   return result;
 };
 
@@ -167,9 +170,31 @@ const updateOfferedCourseFromDB = async (
   return result;
 };
 
+const deleteOfferedCourseFromDB = async (id: string) => {
+  const offeredCourseData = await OfferedCourse.findById(id);
+  if (!offeredCourseData) {
+    throw new AppError(404, "offered course not found !");
+  }
+
+  const semesterRegistration = await SemesterRegistration.findById(
+    offeredCourseData.semesterRegistration,
+  );
+
+  if (semesterRegistration?.status !== SemesterRegistrationStatus.UPCOMING) {
+    throw new AppError(
+      400,
+      `you can not deleted because it's ${semesterRegistration?.status}`,
+    );
+  }
+
+  const result = await OfferedCourse.findByIdAndDelete(id);
+  return result;
+};
+
 export const offeredCourseServices = {
   createOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
   getSingleOfferedCourseFromDB,
   updateOfferedCourseFromDB,
+  deleteOfferedCourseFromDB,
 };

@@ -31,4 +31,12 @@ router.patch(
   semesterRegistrationControllers.updateSemesterRegistration,
 );
 
+router.delete(
+  "/:id",
+  validateRequest(
+    semesterRegistrationValidations.zodSemesterRegistrationIdValidationSchema,
+  ),
+  semesterRegistrationControllers.deleteSemesterRegistration,
+);
+
 export const semesterRegistrationRoutes = router;

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { QueryBuilder } from "../../builders/QueryBuilder";
 import { AppError } from "../../errors/appError";
 import {
@@ -5,8 +6,12 @@ import {
   allowedSemesterRegistrationSearchableFields,
   excludedSemesterRegistrationFields,
 } from "./semesterRegistration.constant";
-import type { ISemesterRegistration } from "./semesterRegistration.interface";
+import {
+  SemesterRegistrationStatus,
+  type ISemesterRegistration,
+} from "./semesterRegistration.interface";
 import { SemesterRegistration } from "./semesterRegistration.model";
+import { OfferedCourse } from "../offeredCourse/offeredCourse.model";
 
 const createSemesterRegistrationIntoDB = async (
   payload: ISemesterRegistration,
@@ -53,9 +58,52 @@ const updateSemesterRegistrationFromDB = async (
   return result;
 };
 
+const deleteSemesterRegistrationFromDB = async (id: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    const semesterRegistrationData =
+      await SemesterRegistration.findById(id).session(session);
+
+    if (!semesterRegistrationData) {
+      throw new AppError(404, "semester registration not found !");
+    }
+
+    if (
+      semesterRegistrationData.status !== SemesterRegistrationStatus.UPCOMING
+    ) {
+      throw new AppError(
+        400,
+        `you can not delete because it's ${semesterRegistrationData.status}`,
+      );
+    }
+
+    await OfferedCourse.deleteMany(
+      {
+        semesterRegistration: semesterRegistrationData._id,
+      },
+      { session },
+    );
+
+    const result = await SemesterRegistration.findByIdAndDelete(id, {
+      session,
+    });
+
+    await session.commitTransaction();
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+};
+
 export const semesterRegistrationServices = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationFromDB,
   getSingleSemesterRegistrationFromDB,
   updateSemesterRegistrationFromDB,
+  deleteSemesterRegistrationFromDB,
 };
