@@ -1,8 +1,10 @@
+import config from "../../config";
 import { AppError } from "../../errors/appError";
 import { Status } from "../user/user.interface";
 import { User } from "../user/user.model";
 import type { ILoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const user = await User.findOne({
@@ -26,7 +28,19 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
     throw new AppError(400, "invalid password !");
   }
 
-  return user;
+  const accessToken = jwt.sign(
+    {
+      userId: user.id,
+      role: user.role,
+    },
+    config.jwt_access_token as string,
+    { expiresIn: "1h" },
+  );
+
+  return {
+    accessToken,
+    needsPasswordChange: user.needsPasswordChange,
+  };
 };
 
 export const authServices = {
