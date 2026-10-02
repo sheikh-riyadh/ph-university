@@ -1,10 +1,8 @@
 import { model, Schema } from "mongoose";
-import {
-  SemesterRegistrationStatus,
-  type ISemesterRegistration,
-} from "./semesterRegistration.interface";
+import { type ISemesterRegistration } from "./semesterRegistration.interface";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { AppError } from "../../errors/appError";
+import { SEMESTER_REGISTRATION_STATUS } from "./semesterRegistration.constant";
 
 const semesterRegistrationSchema = new Schema<ISemesterRegistration>(
   {
@@ -16,8 +14,8 @@ const semesterRegistrationSchema = new Schema<ISemesterRegistration>(
     },
     status: {
       type: String,
-      enum: Object.values(SemesterRegistrationStatus),
-      default: SemesterRegistrationStatus.UPCOMING,
+      enum: Object.values(SEMESTER_REGISTRATION_STATUS),
+      default: SEMESTER_REGISTRATION_STATUS.UPCOMING,
       required: true,
     },
     startDate: {
@@ -67,8 +65,8 @@ semesterRegistrationSchema.pre("save", async function () {
   const isAnyUpcomingOrOnGoingSemesterRegistrationExists =
     await SemesterRegistration.findOne({
       $or: [
-        { status: SemesterRegistrationStatus.UPCOMING },
-        { status: SemesterRegistrationStatus.ONGOING },
+        { status: SEMESTER_REGISTRATION_STATUS.UPCOMING },
+        { status: SEMESTER_REGISTRATION_STATUS.ONGOING },
       ],
     });
 
@@ -89,7 +87,7 @@ semesterRegistrationSchema.pre("findOneAndUpdate", async function () {
     throw new AppError(404, "semester registration not found !");
   }
 
-  if (semesterRegistration.status === SemesterRegistrationStatus.ENDED) {
+  if (semesterRegistration.status === SEMESTER_REGISTRATION_STATUS.ENDED) {
     throw new AppError(
       400,
       `this semester registration already ${semesterRegistration.status} !`,
@@ -108,8 +106,8 @@ semesterRegistrationSchema.pre("findOneAndUpdate", async function () {
   }
 
   if (
-    semesterRegistration.status === SemesterRegistrationStatus.UPCOMING &&
-    payload?.status === SemesterRegistrationStatus.ENDED
+    semesterRegistration.status === SEMESTER_REGISTRATION_STATUS.UPCOMING &&
+    payload?.status === SEMESTER_REGISTRATION_STATUS.ENDED
   ) {
     throw new AppError(
       400,
@@ -118,8 +116,8 @@ semesterRegistrationSchema.pre("findOneAndUpdate", async function () {
   }
 
   if (
-    semesterRegistration.status === SemesterRegistrationStatus.ONGOING &&
-    payload.status === SemesterRegistrationStatus.UPCOMING
+    semesterRegistration.status === SEMESTER_REGISTRATION_STATUS.ONGOING &&
+    payload.status === SEMESTER_REGISTRATION_STATUS.UPCOMING
   ) {
     throw new AppError(
       400,

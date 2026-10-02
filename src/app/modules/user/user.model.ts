@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
-import { Status, type IUser } from "./user.interface";
+import { type IUser } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
-import { USER_ROLE } from "./user.constant";
+import { STATUS, USER_ROLE } from "./user.constant";
 
 const userSchema = new Schema<IUser>(
   {
@@ -14,6 +14,10 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+      select: 0,
+    },
+    passwordChangedAt: {
+      type: Date,
     },
     needsPasswordChange: {
       type: Boolean,
@@ -25,8 +29,8 @@ const userSchema = new Schema<IUser>(
     },
     status: {
       type: String,
-      enum: Object.values(Status),
-      default: Status.IN_PROGRESS,
+      enum: Object.values(STATUS),
+      default: STATUS["in-progress"],
     },
     isDeleted: {
       type: Boolean,

@@ -2,8 +2,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { courseServices } from "./course.service";
 
 const createCourse = catchAsync(async (req, res) => {
-  const { course } = req.body;
-  const result = await courseServices.createCourseIntoDB(course);
+  const result = await courseServices.createCourseIntoDB(req.body);
   res.status(201).json({
     success: true,
     message: "Created course successfully",
@@ -34,7 +33,7 @@ const updateCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await courseServices.updateCourseFromDB(
     id as string,
-    req.body.course,
+    req.body,
   );
 
   res.status(200).json({

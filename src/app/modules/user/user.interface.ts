@@ -1,23 +1,19 @@
-import type { USER_ROLE } from "./user.constant";
-
-// export enum Role {
-//   ADMIN = "admin",
-//   STUDENT = "student",
-//   FACULTY = "faculty",
-// }
+import type { STATUS, USER_ROLE } from "./user.constant";
 
 export type TRole = keyof typeof USER_ROLE;
-
-export enum Status {
-  IN_PROGRESS = "in-progress",
-  BLOCKED = "blocked",
-}
+export type TStatus = keyof typeof STATUS;
 
 export interface IUser {
   id: string;
   password: string;
+  passwordChangedAt?: Date;
   needsPasswordChange: boolean;
   role: TRole;
-  status: Status;
+  status: TStatus;
   isDeleted: boolean;
+}
+
+export interface IJwtPayload {
+  userId: string;
+  role: TRole;
 }

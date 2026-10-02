@@ -4,7 +4,7 @@ import { AcademicDepartment } from "../academicDepartment/academicDepartment.mod
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
 import { Course } from "../course/course.model";
 import { Faculty } from "../faculty/faculty.model";
-import { SemesterRegistrationStatus } from "../semesterRegistration/semesterRegistration.interface";
+import { SEMESTER_REGISTRATION_STATUS } from "../semesterRegistration/semesterRegistration.constant";
 import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
 import { allowedSearchableFields } from "../student/student.constant";
 import {
@@ -143,7 +143,7 @@ const updateOfferedCourseFromDB = async (
     isOfferedCourseExists.semesterRegistration,
   );
 
-  if (semesterRegistration?.status !== SemesterRegistrationStatus.UPCOMING) {
+  if (semesterRegistration?.status !== SEMESTER_REGISTRATION_STATUS.UPCOMING) {
     throw new AppError(
       400,
       `you can not update because it's ${semesterRegistration?.status}`,
@@ -180,7 +180,7 @@ const deleteOfferedCourseFromDB = async (id: string) => {
     offeredCourseData.semesterRegistration,
   );
 
-  if (semesterRegistration?.status !== SemesterRegistrationStatus.UPCOMING) {
+  if (semesterRegistration?.status !== SEMESTER_REGISTRATION_STATUS.UPCOMING) {
     throw new AppError(
       400,
       `you can not deleted because it's ${semesterRegistration?.status}`,

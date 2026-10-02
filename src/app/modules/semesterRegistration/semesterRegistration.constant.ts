@@ -11,3 +11,9 @@ export const excludedSemesterRegistrationFields = [
   "fields",
   "password",
 ];
+
+export const SEMESTER_REGISTRATION_STATUS = {
+  UPCOMING: "UPCOMING",
+  ONGOING: "ONGOING",
+  ENDED: "ENDED",
+} as const;

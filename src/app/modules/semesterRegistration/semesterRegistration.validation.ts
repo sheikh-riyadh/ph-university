@@ -1,12 +1,15 @@
 import z from "zod";
 import { zodMongooseObjectIdValidationSchema } from "../../validations/common.validation";
-import { SemesterRegistrationStatus } from "./semesterRegistration.interface";
+import { SEMESTER_REGISTRATION_STATUS } from "./semesterRegistration.constant";
 
 const semesterRegistrationValidation = z.object({
   academicSemester: zodMongooseObjectIdValidationSchema,
-  status: z.enum(SemesterRegistrationStatus, {
-    error: "invalid status. please provide valid registration status !",
-  }),
+  status: z.enum(
+    Object.values(SEMESTER_REGISTRATION_STATUS) as [string, ...string[]],
+    {
+      error: "invalid status. please provide valid registration status!",
+    },
+  ),
   startDate: z.string({
     error: "invalid start date !",
   }),
@@ -18,9 +21,7 @@ const semesterRegistrationValidation = z.object({
 });
 
 const zodCreateSemesterRegistrationValidationSchema = z.object({
-  body: z.object({
-    semesterRegistration: semesterRegistrationValidation,
-  }),
+  body: semesterRegistrationValidation,
 });
 
 const zodSemesterRegistrationIdValidationSchema = z.object({
@@ -30,9 +31,7 @@ const zodSemesterRegistrationIdValidationSchema = z.object({
 });
 
 const zodUpdateSemesterRegistrationValidationSchema = z.object({
-  body: z.object({
-    semesterRegistration: semesterRegistrationValidation.partial(),
-  }),
+  body: semesterRegistrationValidation.partial(),
   params: z.object({
     id: zodMongooseObjectIdValidationSchema,
   }),

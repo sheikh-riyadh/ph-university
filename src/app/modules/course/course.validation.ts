@@ -18,9 +18,7 @@ const courseValidationSchema = z.object({
 });
 
 const zodCreateCourseValidationSchema = z.object({
-  body: z.object({
-    course: courseValidationSchema,
-  }),
+  body: courseValidationSchema,
 });
 
 const zodCourseIdValidationSchema = z.object({
@@ -30,9 +28,7 @@ const zodCourseIdValidationSchema = z.object({
 });
 
 const zodUpdateCourseValidationShema = z.object({
-  body: z.object({
-    course: courseValidationSchema.partial(),
-  }),
+  body: courseValidationSchema.partial(),
   params: z.object({
     id: zodMongooseObjectIdValidationSchema,
   }),

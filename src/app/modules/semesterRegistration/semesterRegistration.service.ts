@@ -5,11 +5,9 @@ import {
   allowedSemesterRegistrationFilterFields,
   allowedSemesterRegistrationSearchableFields,
   excludedSemesterRegistrationFields,
+  SEMESTER_REGISTRATION_STATUS,
 } from "./semesterRegistration.constant";
-import {
-  SemesterRegistrationStatus,
-  type ISemesterRegistration,
-} from "./semesterRegistration.interface";
+import { type ISemesterRegistration } from "./semesterRegistration.interface";
 import { SemesterRegistration } from "./semesterRegistration.model";
 import { OfferedCourse } from "../offeredCourse/offeredCourse.model";
 
@@ -71,7 +69,7 @@ const deleteSemesterRegistrationFromDB = async (id: string) => {
     }
 
     if (
-      semesterRegistrationData.status !== SemesterRegistrationStatus.UPCOMING
+      semesterRegistrationData.status !== SEMESTER_REGISTRATION_STATUS.UPCOMING
     ) {
       throw new AppError(
         400,
