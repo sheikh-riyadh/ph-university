@@ -4,7 +4,7 @@ import { AppError } from "../../errors/appError";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import type { IStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
-import { Role, type IUser } from "./user.interface";
+import { type IUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentID } from "./user.utils";
 import type { IFaculty } from "../faculty/faculty.interface";
@@ -13,6 +13,7 @@ import { Faculty } from "../faculty/faculty.model";
 import type { IAdmin } from "../admin/admin.interface";
 import { generateAdminID } from "../admin/admin.utils";
 import { Admin } from "../admin/admin.model";
+import { USER_ROLE } from "./user.constant";
 
 const createStudentIntoDB = async (password: string, payload: IStudent) => {
   const academicSemester = await AcademicSemester.isAcademicSemesterExists(
@@ -28,7 +29,7 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
 
     const userData: Partial<IUser> = {
       password: password || (config.default_pass as string),
-      role: Role.STUDENT,
+      role: USER_ROLE.student,
       id: studentId,
     };
 
@@ -72,7 +73,7 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
 
     const userData: Partial<IUser> = {
       password: password || (config.default_pass as string),
-      role: Role.FACULTY,
+      role: USER_ROLE.faculty,
       id: facultyId,
     };
 
@@ -115,7 +116,7 @@ const createAdminIntoDB = async (password: string, payload: IAdmin) => {
     const adminId = await generateAdminID(session);
     const userData: Partial<IUser> = {
       password: password || (config.default_pass as string),
-      role: Role.ADMIN,
+      role: USER_ROLE.admin,
       id: adminId,
     };
 

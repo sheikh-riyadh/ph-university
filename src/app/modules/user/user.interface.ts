@@ -1,8 +1,12 @@
-export enum Role {
-  ADMIN = "admin",
-  STUDENT = "student",
-  FACULTY = "faculty",
-}
+import type { USER_ROLE } from "./user.constant";
+
+// export enum Role {
+//   ADMIN = "admin",
+//   STUDENT = "student",
+//   FACULTY = "faculty",
+// }
+
+export type TRole = keyof typeof USER_ROLE;
 
 export enum Status {
   IN_PROGRESS = "in-progress",
@@ -13,7 +17,7 @@ export interface IUser {
   id: string;
   password: string;
   needsPasswordChange: boolean;
-  role: Role;
+  role: TRole;
   status: Status;
   isDeleted: boolean;
 }

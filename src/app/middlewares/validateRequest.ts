@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type z from "zod";
+import { catchAsync } from "../utils/catchAsync";
 
 type TRequestSchema = z.ZodObject<{
   body?: z.ZodType;
@@ -8,19 +9,13 @@ type TRequestSchema = z.ZodObject<{
 }>;
 
 export const validateRequest = (schema: TRequestSchema) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await schema.parseAsync({
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
-
-      req.body = result.body;
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  };
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await schema.parseAsync({
+      body: req.body,
+      params: req.params,
+      query: req.query,
+    });
+    req.body = result.body;
+    next();
+  });
 };

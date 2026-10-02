@@ -1,7 +1,8 @@
 import { model, Schema } from "mongoose";
-import { Role, Status, type IUser } from "./user.interface";
+import { Status, type IUser } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
+import { USER_ROLE } from "./user.constant";
 
 const userSchema = new Schema<IUser>(
   {
@@ -20,7 +21,7 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: Object.values(Role),
+      enum: Object.values(USER_ROLE),
     },
     status: {
       type: String,
