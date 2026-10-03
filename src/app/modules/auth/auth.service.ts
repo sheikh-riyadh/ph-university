@@ -6,6 +6,7 @@ import { User } from "../user/user.model";
 import type { IChangePassword, ILoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { createToken } from "./auth.utils";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const user = await User.findOne({
@@ -29,13 +30,15 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
     throw new AppError(400, "invalid password !");
   }
 
-  const accessToken = jwt.sign(
-    {
-      userId: user.id,
-      role: user.role,
-    },
-    config.jwt_access_token as string,
-    { expiresIn: "7d" },
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in,
   );
 
   return {

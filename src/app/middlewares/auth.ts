@@ -4,6 +4,8 @@ import { AppError } from "../errors/appError";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import type { IJwtPayload, TRole } from "../modules/user/user.interface";
+import { User } from "../modules/user/user.model";
+import { STATUS } from "../modules/user/user.constant";
 
 export const auth = (...requiredRole: TRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -12,17 +14,39 @@ export const auth = (...requiredRole: TRole[]) => {
       throw new AppError(401, "Unauthorized access !");
     }
 
-    jwt.verify(token, config.jwt_access_token as string, (error, decoded) => {
-      if (error) {
-        throw new AppError(401, "Unauthorized access !!");
-      }
-      req.user = decoded as IJwtPayload;
+    const decoded = jwt.verify(
+      token,
+      config.jwt_access_secret as string,
+    ) as IJwtPayload;
 
-      if (requiredRole && !requiredRole.includes(req.user.role)) {
-        throw new AppError(401, "Unauthorized access !!!");
-      }
+    const { userId, role, iat } = decoded;
 
-      next();
+    const user = await User.findOne({
+      id: userId,
+      role,
     });
+
+    if (!user || user.isDeleted) {
+      throw new AppError(404, "user not found !");
+    }
+
+    if (user.status === STATUS.blocked) {
+      throw new AppError(400, "user is blocked !");
+    }
+
+    // convert time milli-second
+    const passwordUpdatedAt = Math.floor(
+      new Date(user.passwordChangedAt as Date).getTime() / 1000,
+    );
+
+    if (passwordUpdatedAt && passwordUpdatedAt > iat) {
+      throw new AppError(401, "Unauthorized access !");
+    }
+
+    if (requiredRole && !requiredRole.includes(role)) {
+      throw new AppError(401, "Unauthorized access !!!");
+    }
+    req.user = decoded;
+    next();
   });
 };

@@ -16,4 +16,5 @@ export interface IUser {
 export interface IJwtPayload {
   userId: string;
   role: TRole;
+  iat?: number;
 }
