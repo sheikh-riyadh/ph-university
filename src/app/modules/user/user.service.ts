@@ -19,7 +19,6 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
   const academicSemester = await AcademicSemester.isAcademicSemesterExists(
     payload.admissionSemester,
   );
-
   const session = await mongoose.startSession();
 
   try {
@@ -31,6 +30,7 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
       password: password || (config.default_pass as string),
       role: USER_ROLE.student,
       id: studentId,
+      email: payload.email,
     };
 
     // create a user transaction-1
@@ -75,6 +75,7 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
       password: password || (config.default_pass as string),
       role: USER_ROLE.faculty,
       id: facultyId,
+      email: payload.email,
     };
 
     // create a user transaction-1
@@ -118,6 +119,7 @@ const createAdminIntoDB = async (password: string, payload: IAdmin) => {
       password: password || (config.default_pass as string),
       role: USER_ROLE.admin,
       id: adminId,
+      email: payload.email,
     };
 
     const newUser = (await User.create([userData], { session })).at(0);

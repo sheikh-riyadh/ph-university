@@ -6,6 +6,7 @@ type TRequestSchema = z.ZodObject<{
   body?: z.ZodType;
   params?: z.ZodType;
   query?: z.ZodType;
+  cookies?: z.ZodType;
 }>;
 
 export const validateRequest = (schema: TRequestSchema) => {
@@ -14,6 +15,7 @@ export const validateRequest = (schema: TRequestSchema) => {
       body: req.body,
       params: req.params,
       query: req.query,
+      cookies: req.cookies,
     });
     req.body = result.body;
     next();

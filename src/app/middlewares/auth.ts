@@ -39,7 +39,7 @@ export const auth = (...requiredRole: TRole[]) => {
       new Date(user.passwordChangedAt as Date).getTime() / 1000,
     );
 
-    if (passwordUpdatedAt && passwordUpdatedAt > iat) {
+    if (passwordUpdatedAt && passwordUpdatedAt > (iat as number)) {
       throw new AppError(401, "Unauthorized access !");
     }
 

@@ -19,6 +19,7 @@ export const generateStudentID = async (
     },
     {
       new: true,
+      upsert: true,
       session,
     },
   );

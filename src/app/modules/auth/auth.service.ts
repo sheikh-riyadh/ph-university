@@ -5,8 +5,8 @@ import type { IJwtPayload } from "../user/user.interface";
 import { User } from "../user/user.model";
 import type { IChangePassword, ILoginUser } from "./auth.interface";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { createToken } from "./auth.utils";
+import jwt from "jsonwebtoken";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const user = await User.findOne({
@@ -41,8 +41,15 @@ const loginUserIntoDB = async (payload: ILoginUser) => {
     config.jwt_access_expires_in,
   );
 
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in,
+  );
+
   return {
     accessToken,
+    refreshToken,
     needsPasswordChange: user.needsPasswordChange,
   };
 };
@@ -83,7 +90,86 @@ const changePasswordFromDB = async (
   return result;
 };
 
+const refreshTokenFromServer = async (token: string) => {
+  if (!token) {
+    throw new AppError(401, "Unauthorized access !");
+  }
+
+  const decoded = jwt.verify(
+    token,
+    config.jwt_refresh_secret as string,
+  ) as IJwtPayload;
+
+  const { userId, role, iat } = decoded;
+
+  const user = await User.findOne({
+    id: userId,
+    role,
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "user not found !");
+  }
+
+  if (user.status === STATUS.blocked) {
+    throw new AppError(400, "user is blocked !");
+  }
+
+  // convert time milli-second
+  const passwordUpdatedAt = Math.floor(
+    new Date(user.passwordChangedAt as Date).getTime() / 1000,
+  );
+
+  if (passwordUpdatedAt && passwordUpdatedAt > (iat as number)) {
+    throw new AppError(401, "Unauthorized access !");
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in,
+  );
+
+  return {
+    accessToken,
+  };
+};
+
+const forgetPasswordIntoDB = async (id: string) => {
+  const user = await User.findOne({
+    id,
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "user not found !");
+  }
+
+  if (user.status === STATUS.blocked) {
+    throw new AppError(403, "user is blocked !");
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    "5m",
+  );
+
+  const resetUIlink = `${config.front_end_url}?id=${user.id}&token=${resetToken}`;
+};
+
 export const authServices = {
   loginUserIntoDB,
   changePasswordFromDB,
+  refreshTokenFromServer,
+  forgetPasswordIntoDB,
 };
