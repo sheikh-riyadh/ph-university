@@ -8,6 +8,7 @@ import { Error } from "mongoose";
 import { handleCastError } from "../errors/handleCastError";
 import { handleDuplicateError } from "../errors/handleDuplicateError";
 import { AppError } from "../errors/appError";
+import jwt from "jsonwebtoken";
 
 export const globalErrorHandler: ErrorRequestHandler = (
   error,
@@ -67,6 +68,22 @@ export const globalErrorHandler: ErrorRequestHandler = (
       {
         path: "",
         message: error.message,
+      },
+    ];
+  } else if (error instanceof jwt.TokenExpiredError) {
+    defaultResponse.message = "jwt expires !";
+    errorSources = [
+      {
+        path: "",
+        message: "jwt expires !",
+      },
+    ];
+  } else if (error instanceof jwt.JsonWebTokenError) {
+    defaultResponse.message = "invalid token !";
+    errorSources = [
+      {
+        path: "",
+        message: "invalid token !",
       },
     ];
   }

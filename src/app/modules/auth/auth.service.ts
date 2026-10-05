@@ -3,10 +3,15 @@ import { AppError } from "../../errors/appError";
 import { STATUS } from "../user/user.constant";
 import type { IJwtPayload } from "../user/user.interface";
 import { User } from "../user/user.model";
-import type { IChangePassword, ILoginUser } from "./auth.interface";
+import type {
+  IChangePassword,
+  ILoginUser,
+  IResetPassword,
+} from "./auth.interface";
 import bcrypt from "bcrypt";
 import { createToken } from "./auth.utils";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../../utils/sendEmail";
 
 const loginUserIntoDB = async (payload: ILoginUser) => {
   const user = await User.findOne({
@@ -163,8 +168,41 @@ const forgetPasswordIntoDB = async (id: string) => {
     config.jwt_access_secret as string,
     "5m",
   );
-
   const resetUIlink = `${config.front_end_url}?id=${user.id}&token=${resetToken}`;
+  await sendEmail({ email: user.email, resetLink: resetUIlink });
+};
+
+const resetPasswordIntoDB = async (payload: IResetPassword) => {
+  const user = await User.findOne({
+    id: payload.id,
+  });
+
+  if (!user || user.isDeleted) {
+    throw new AppError(404, "user not found !");
+  }
+
+  if (user.status === STATUS.blocked) {
+    throw new AppError(403, "user is blocked !");
+  }
+
+  const decoded = jwt.verify(
+    payload.token,
+    config.jwt_access_secret as string,
+  ) as IJwtPayload;
+
+  if (decoded && decoded.userId !== user.id) {
+    throw new AppError(401, "Unauthorized access !");
+  }
+
+  user.password = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  user.passwordChangedAt = new Date();
+  user.needsPasswordChange = false;
+
+  await User.findByIdAndUpdate(user._id, user);
 };
 
 export const authServices = {
@@ -172,4 +210,5 @@ export const authServices = {
   changePasswordFromDB,
   refreshTokenFromServer,
   forgetPasswordIntoDB,
+  resetPasswordIntoDB,
 };

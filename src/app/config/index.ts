@@ -15,4 +15,6 @@ export default {
   jwt_access_expires_in: process.env.JWT_ACCESS_EXPIRES_IN as StringValue,
   jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN as StringValue,
   front_end_url: process.env.FRONT_END_URL as string,
+  smtp_password: process.env.SMTP_PASSWORD,
+  smtp_email: process.env.SMTP_email,
 };

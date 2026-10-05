@@ -37,10 +37,21 @@ const zodForgetPasswordValidationSchema = z.object({
     }),
   }),
 });
+const zodResetPasswordValidationSchema = z.object({
+  body: z.object({
+    id: z.string({
+      error: "id is required !",
+    }),
+    newPassword: z.string({
+      error: "password is required !!",
+    }),
+  }),
+});
 
 export const authValidations = {
   zodAuthLoginValidationSchema,
   zodChangePasswordValidationSchema,
   zodRefreshTokenValidationSchema,
   zodForgetPasswordValidationSchema,
+  zodResetPasswordValidationSchema,
 };

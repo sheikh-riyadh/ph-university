@@ -1,6 +1,7 @@
 import type { ClientSession } from "mongoose";
 import type { IAcademicSemester } from "../academicSemester/academicSemester.interface";
 import { StudentCounter } from "../student/student.model";
+import { AppError } from "../../errors/appError";
 
 export const generateStudentID = async (
   academicSemester: IAcademicSemester,
@@ -25,7 +26,7 @@ export const generateStudentID = async (
   );
 
   if (!counter) {
-    throw new Error("Failed to generate student ID");
+    throw new AppError(400, "Failed to generate student ID");
   }
 
   const sequence = counter.sequence.toString().padStart(4, "0");
