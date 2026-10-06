@@ -14,8 +14,13 @@ import type { IAdmin } from "../admin/admin.interface";
 import { generateAdminID } from "../admin/admin.utils";
 import { Admin } from "../admin/admin.model";
 import { USER_ROLE } from "./user.constant";
+import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 
-const createStudentIntoDB = async (password: string, payload: IStudent) => {
+const createStudentIntoDB = async (
+  file: Record<string, unknown>,
+  password: string,
+  payload: IStudent,
+) => {
   const academicSemester = await AcademicSemester.isAcademicSemesterExists(
     payload.admissionSemester,
   );
@@ -33,6 +38,14 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
       email: payload.email,
     };
 
+    const imageName = `${studentId}_${payload.name.firstName}`;
+
+    // send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(
+      file?.path as string,
+      imageName as string,
+    );
+
     // create a user transaction-1
     const newUser = (await User.create([userData], { session })).at(0);
 
@@ -44,6 +57,7 @@ const createStudentIntoDB = async (password: string, payload: IStudent) => {
       ...payload,
       id: newUser.id,
       user: newUser._id,
+      profileImage: secure_url,
     };
 
     // Create student transaction-2

@@ -3,7 +3,13 @@ import { userServices } from "./user.service";
 
 const createStudent = catchAsync(async (req, res) => {
   const { password, student } = req.body;
-  const user = await userServices.createStudentIntoDB(password, student);
+  const user = await userServices.createStudentIntoDB(
+    {
+      path: req.file?.path,
+    },
+    password,
+    student,
+  );
   res.status(201).json({
     success: true,
     message: "User created successfully",

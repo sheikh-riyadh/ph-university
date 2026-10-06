@@ -1,4 +1,8 @@
-import express from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import { userControllers } from "./user.controller";
 import { studentValidations } from "../student/student.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
@@ -7,12 +11,18 @@ import { adminValidations } from "../admin/admin.validation";
 import { auth } from "../../middlewares/auth";
 import { USER_ROLE } from "./user.constant";
 import { userValidations } from "./user.validation";
+import { upload } from "../../utils/sendImageToCloudinary";
 
 const route = express.Router();
 
 route.post(
   "/create-student",
   auth(USER_ROLE.admin),
+  upload.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(studentValidations.zodCreateStudentValidationSchema),
   userControllers.createStudent,
 );
