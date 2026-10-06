@@ -13,3 +13,8 @@ export interface IResetPassword {
   newPassword: string;
   token: string;
 }
+
+export interface IVerifiedToken {
+  token: string;
+  secret: string;
+}

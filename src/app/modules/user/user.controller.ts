@@ -31,8 +31,31 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const result = await userServices.getMeFromDB(req.user);
+  res.status(200).json({
+    success: true,
+    message: "data retrived successfully !",
+    data: result,
+  });
+});
+
+const changeStatus = catchAsync(async (req, res) => {
+  const result = await userServices.changeStatusFromDB(
+    req.body.status,
+    req.params.id as string,
+  );
+  res.status(200).json({
+    success: true,
+    message: "status changed successfully !",
+    data: result,
+  });
+});
+
 export const userControllers = {
   createStudent,
   createFaculty,
   createAdmin,
+  getMe,
+  changeStatus,
 };

@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { AppError } from "../errors/appError";
-import jwt from "jsonwebtoken";
 import config from "../config";
 import type { IJwtPayload, TRole } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 import { STATUS } from "../modules/user/user.constant";
+import { verifiedToken } from "../modules/auth/auth.utils";
 
 export const auth = (...requiredRole: TRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -14,10 +14,12 @@ export const auth = (...requiredRole: TRole[]) => {
       throw new AppError(401, "Unauthorized access !");
     }
 
-    const decoded = jwt.verify(
+    const payload = {
       token,
-      config.jwt_access_secret as string,
-    ) as IJwtPayload;
+      secret: config.jwt_access_secret as string,
+    };
+
+    const decoded = verifiedToken(payload) as IJwtPayload;
 
     const { userId, role, iat } = decoded;
 

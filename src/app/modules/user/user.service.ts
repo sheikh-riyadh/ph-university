@@ -4,7 +4,7 @@ import { AppError } from "../../errors/appError";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import type { IStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
-import { type IUser } from "./user.interface";
+import type { IJwtPayload, IUser } from "./user.interface";
 import { User } from "./user.model";
 import { generateStudentID } from "./user.utils";
 import type { IFaculty } from "../faculty/faculty.interface";
@@ -150,8 +150,44 @@ const createAdminIntoDB = async (password: string, payload: IAdmin) => {
   }
 };
 
+const getMeFromDB = async ({ role, userId }: IJwtPayload) => {
+  if (role === USER_ROLE.student) {
+    return await Student.findOne({
+      id: userId,
+    });
+  }
+  if (role === USER_ROLE.faculty) {
+    return await Faculty.findOne({
+      id: userId,
+    });
+  }
+  if (role === USER_ROLE.admin) {
+    return await Admin.findOne({
+      id: userId,
+    });
+  }
+
+  return null;
+};
+
+const changeStatusFromDB = async (status: string, id: string) => {
+  const result = await User.findByIdAndUpdate(
+    id,
+    { status },
+    { returnDocument: "after" },
+  );
+
+  if (!result) {
+    throw new AppError(404, "user not found !");
+  }
+
+  return result;
+};
+
 export const userServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMeFromDB,
+  changeStatusFromDB,
 };
