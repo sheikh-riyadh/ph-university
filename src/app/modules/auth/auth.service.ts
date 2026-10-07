@@ -9,7 +9,7 @@ import type {
   IResetPassword,
 } from "./auth.interface";
 import bcrypt from "bcrypt";
-import { createToken } from "./auth.utils";
+import { createToken, verifiedToken } from "./auth.utils";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../utils/sendEmail";
 
@@ -100,10 +100,12 @@ const refreshTokenFromServer = async (token: string) => {
     throw new AppError(401, "Unauthorized access !");
   }
 
-  const decoded = jwt.verify(
+  const payload = {
     token,
-    config.jwt_refresh_secret as string,
-  ) as IJwtPayload;
+    secret: config.jwt_refresh_secret as string,
+  };
+
+  const decoded = verifiedToken(payload) as IJwtPayload;
 
   const { userId, role, iat } = decoded;
 
