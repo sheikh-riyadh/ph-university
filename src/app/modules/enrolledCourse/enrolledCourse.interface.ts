@@ -20,8 +20,8 @@ export interface IEnrolledCourse {
   student: Types.ObjectId;
   faculty: Types.ObjectId;
   isEnrolled: boolean;
-  courseMarks: ICourseMarks;
-  grade: TGrade;
-  gradePoint: number;
-  isCompleted: boolean;
+  courseMarks?: ICourseMarks;
+  grade?: TGrade;
+  gradePoint?: number;
+  isCompleted?: boolean;
 }

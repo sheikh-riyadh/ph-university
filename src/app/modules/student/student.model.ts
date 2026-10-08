@@ -186,6 +186,7 @@ const studentCounterSchema = new Schema<IStudentCounter>(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

@@ -31,18 +31,24 @@ adminSchema.pre("aggregate", function () {
 
 export const Admin = model<IAdmin>("Admin", adminSchema);
 
-const adminCounterSchema = new Schema<IAdminCounter>({
-  key: {
-    type: String,
-    required: true,
-    unique: true,
+const adminCounterSchema = new Schema<IAdminCounter>(
+  {
+    key: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    sequence: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
   },
-  sequence: {
-    type: Number,
-    required: true,
-    default: 0,
+  {
+    timestamps: true,
+    versionKey: false,
   },
-});
+);
 
 export const AdminCounter = model<IAdminCounter>(
   "AdminCounter",
