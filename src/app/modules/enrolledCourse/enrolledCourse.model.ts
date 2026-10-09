@@ -1,27 +1,41 @@
 import { model, Schema } from "mongoose";
-import type { ICourseMarks, IEnrolledCourse } from "./enrolledCourse.interface";
+import type {
+  IEnrolledCourseMarks,
+  IEnrolledCourse,
+} from "./enrolledCourse.interface";
 import { GRADE } from "./enrolledCourse.constant";
 
-const courseMarksSchema = new Schema<ICourseMarks>({
-  classTest1: {
-    type: Number,
-    default: 0,
+const courseMarksSchema = new Schema<IEnrolledCourseMarks>(
+  {
+    classTest1: {
+      type: Number,
+      min: 0,
+      max: 10,
+      default: 0,
+    },
+    midTerm: {
+      type: Number,
+      min: 0,
+      max: 30,
+      default: 0,
+    },
+    classTest2: {
+      type: Number,
+      min: 0,
+      max: 10,
+      default: 0,
+    },
+    final: {
+      type: Number,
+      min: 0,
+      max: 50,
+      default: 0,
+    },
   },
-  midTerm: {
-    type: Number,
-    default: 0,
+  {
+    _id: false,
   },
-  classTest2: {
-    type: Number,
-    default: 0,
-  },
-  final: {
-    type: Number,
-    default: 0,
-  },
-},{
-  _id:false,
-});
+);
 
 const enrolledCourseSchema = new Schema<IEnrolledCourse>(
   {

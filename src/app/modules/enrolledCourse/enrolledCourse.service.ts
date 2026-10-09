@@ -6,6 +6,7 @@ import type { IEnrolledCourse } from "./enrolledCourse.interface";
 import { EnrolledCourse } from "./enrolledCourse.model";
 import { Course } from "../course/course.model";
 import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
+import type { IJwtPayload } from "../user/user.interface";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -82,6 +83,9 @@ const createEnrolledCourseIntoDB = async (
     const course = await Course.findById(offeredCourse.course).session(session);
     const semesterRegistration = await SemesterRegistration.findById(
       offeredCourse.semesterRegistration,
+      {
+        maxCredit: 1,
+      },
     );
 
     const totalCredits = enrolledCourses[0]?.totalCredits || 0;
@@ -108,7 +112,7 @@ const createEnrolledCourseIntoDB = async (
     };
 
     const result = (
-      await EnrolledCourse.create([{ ...enrolledCoursePayload }], {
+      await EnrolledCourse.create([enrolledCoursePayload], {
         session,
       })
     ).at(0);
@@ -130,6 +134,67 @@ const createEnrolledCourseIntoDB = async (
   }
 };
 
+const updateEnrolledCourseMarksIntoDB = async (
+  faculty: IJwtPayload,
+  payload: Pick<
+    IEnrolledCourse,
+    "semesterRegistration" | "offeredCourse" | "student" | "courseMarks"
+  >,
+  enrolledCourseId: string,
+) => {
+  const [semesterRegistration, offeredCourse, student] = await Promise.all([
+    SemesterRegistration.findById(payload.semesterRegistration, {
+      _id: 1,
+    }),
+    OfferedCourse.findById(payload.offeredCourse),
+    { _id: 1 },
+    Student.findById(payload.student, { _id: 1 }),
+  ]);
+
+  if (!semesterRegistration || !offeredCourse || !student) {
+    const result = `${(!semesterRegistration && "semester registration") || (!offeredCourse && "offered course") || (!student && "student")}`;
+
+    throw new AppError(404, `${result} not found !`);
+  }
+
+  const enrolledCourse = await EnrolledCourse.findById(enrolledCourseId, {
+    _id: 1,
+    faculty: 1,
+  }).populate<{ faculty: { _id: Types.ObjectId; id: string } }>({
+    path: "faculty",
+    select: "id",
+  });
+
+  if (!enrolledCourse) {
+    throw new AppError(404, "enrolled course not found !");
+  }
+
+  if (enrolledCourse.faculty.id !== faculty.userId) {
+    throw new AppError(401, "faculty do not match in this enrolled course !");
+  }
+
+  const modifiedData: Record<string, unknown> = {
+    ...payload.courseMarks,
+  };
+
+  if (payload.courseMarks && Object.keys(payload.courseMarks).length) {
+    for (const [key, value] of Object.entries(payload.courseMarks)) {
+      modifiedData[`courseMarks.${key}`] = value;
+    }
+  }
+
+  const result = await EnrolledCourse.findByIdAndUpdate(
+    enrolledCourse._id,
+    modifiedData,
+    {
+      returnDocument: "after",
+    },
+  );
+
+  return result;
+};
+
 export const enrolledCourseServices = {
   createEnrolledCourseIntoDB,
+  updateEnrolledCourseMarksIntoDB,
 };

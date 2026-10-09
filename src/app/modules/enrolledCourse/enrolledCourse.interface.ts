@@ -3,7 +3,7 @@ import type { GRADE } from "./enrolledCourse.constant";
 
 export type TGrade = keyof typeof GRADE;
 
-export interface ICourseMarks {
+export interface IEnrolledCourseMarks {
   classTest1: number;
   midTerm: number;
   classTest2: number;
@@ -20,7 +20,7 @@ export interface IEnrolledCourse {
   student: Types.ObjectId;
   faculty: Types.ObjectId;
   isEnrolled: boolean;
-  courseMarks?: ICourseMarks;
+  courseMarks?: IEnrolledCourseMarks;
   grade?: TGrade;
   gradePoint?: number;
   isCompleted?: boolean;
