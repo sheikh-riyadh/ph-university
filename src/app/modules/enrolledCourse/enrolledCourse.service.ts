@@ -2,11 +2,15 @@ import mongoose, { type Types } from "mongoose";
 import { AppError } from "../../errors/appError";
 import { OfferedCourse } from "../offeredCourse/offeredCourse.model";
 import { Student } from "../student/student.model";
-import type { IEnrolledCourse } from "./enrolledCourse.interface";
+import type {
+  IEnrolledCourse,
+  IEnrolledCourseMarks,
+} from "./enrolledCourse.interface";
 import { EnrolledCourse } from "./enrolledCourse.model";
 import { Course } from "../course/course.model";
 import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
 import type { IJwtPayload } from "../user/user.interface";
+import { calculateGradeAndPoints } from "./enrolledCourse.utils";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -157,13 +161,12 @@ const updateEnrolledCourseMarksIntoDB = async (
     throw new AppError(404, `${result} not found !`);
   }
 
-  const enrolledCourse = await EnrolledCourse.findById(enrolledCourseId, {
-    _id: 1,
-    faculty: 1,
-  }).populate<{ faculty: { _id: Types.ObjectId; id: string } }>({
-    path: "faculty",
-    select: "id",
-  });
+  const enrolledCourse = await EnrolledCourse.findById(enrolledCourseId)
+    .select("_id faculty courseMarks isCompleted grade gradePoint")
+    .populate<{ faculty: { _id: Types.ObjectId; id: string } }>({
+      path: "faculty",
+      select: "id",
+    });
 
   if (!enrolledCourse) {
     throw new AppError(404, "enrolled course not found !");
@@ -176,6 +179,24 @@ const updateEnrolledCourseMarksIntoDB = async (
   const modifiedData: Record<string, unknown> = {
     ...payload.courseMarks,
   };
+
+  if (payload.courseMarks?.final) {
+    const { classTest1, midTerm, classTest2 } =
+      enrolledCourse.courseMarks as IEnrolledCourseMarks;
+
+    const totalMarks = Math.ceil(
+      classTest1 * 0.1 +
+        midTerm * 0.3 +
+        classTest2 * 0.1 +
+        payload.courseMarks?.final * 0.5,
+    );
+
+    const { grade, gradePoint } = calculateGradeAndPoints(totalMarks);
+
+    modifiedData.grade = grade;
+    modifiedData.gradePoint = gradePoint;
+    modifiedData.isCompleted = true;
+  }
 
   if (payload.courseMarks && Object.keys(payload.courseMarks).length) {
     for (const [key, value] of Object.entries(payload.courseMarks)) {

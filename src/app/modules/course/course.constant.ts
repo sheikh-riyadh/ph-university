@@ -1,10 +1,4 @@
-export const allowedCouseSearchableFields = [
-  "title",
-  "prefix",
-  "code",
-  "credits",
-  "id",
-];
+export const allowedCouseSearchableFields = ["title", "prefix"];
 
 export const allowedCourseFilterFields = ["title"];
 
