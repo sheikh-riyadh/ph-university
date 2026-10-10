@@ -64,7 +64,7 @@ export class QueryBuilder<T> {
   }
 
   async countTotal() {
-    const filter = this.modelQuery.getQuery();
+    const filter = this.modelQuery.getFilter();
     const total = await this.modelQuery.model.countDocuments(filter);
 
     const page = Number(this?.query?.page) || 1;

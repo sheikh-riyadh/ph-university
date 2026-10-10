@@ -77,7 +77,11 @@ const createStudentIntoDB = async (
   }
 };
 
-const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
+const createFacultyIntoDB = async (
+  file: Record<string, unknown>,
+  password: string,
+  payload: IFaculty,
+) => {
   const session = await mongoose.startSession();
 
   try {
@@ -92,6 +96,8 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
       email: payload.email,
     };
 
+    const imageName = `${facultyId}_${payload.name.firstName}`;
+
     // create a user transaction-1
     const newUser = (await User.create([userData], { session })).at(0);
 
@@ -99,10 +105,17 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
       throw new AppError(400, "Failed to create user");
     }
 
+    // send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(
+      file?.path as string,
+      imageName as string,
+    );
+
     const facultyData: IFaculty = {
       ...payload,
       id: newUser.id,
       user: newUser._id,
+      profileImage: secure_url,
     };
 
     // Create a faculty transaction-2
@@ -122,7 +135,11 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: IAdmin) => {
+const createAdminIntoDB = async (
+  file: Record<string, unknown>,
+  password: string,
+  payload: IAdmin,
+) => {
   const session = await mongoose.startSession();
 
   try {
@@ -136,16 +153,25 @@ const createAdminIntoDB = async (password: string, payload: IAdmin) => {
       email: payload.email,
     };
 
+    const imageName = `${adminId}_${payload.name.firstName}`;
+
     const newUser = (await User.create([userData], { session })).at(0);
 
     if (!newUser) {
       throw new AppError(400, "Failed to create user !");
     }
 
+    // send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(
+      file?.path as string,
+      imageName as string,
+    );
+
     const adminData: IAdmin = {
       ...payload,
       user: newUser._id,
       id: newUser.id,
+      profileImage: secure_url,
     };
 
     const newAdmin = await Admin.create([adminData], { session });

@@ -4,19 +4,19 @@ import { zodMongooseObjectIdValidationSchema } from "../../validations/common.va
 
 const academicSemesterValidationSchema = z.object({
   name: z.enum(Name, {
-    error: "name is required",
+    error: "invalid academic semester name !",
   }),
   year: z.string({
-    error: "year is required",
+    error: "invalid academic semester year !",
   }),
   code: z.enum(Codes, {
-    error: "code is required",
+    error: "invalid academic semester code !",
   }),
   startMonth: z.enum(Months, {
-    error: "start month is required",
+    error: "invalid academic semester start month !",
   }),
   endMonth: z.enum(Months, {
-    error: "end month is required",
+    error: "invalid academic semester end month !",
   }),
 });
 

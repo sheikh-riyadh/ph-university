@@ -17,7 +17,7 @@ const route = express.Router();
 
 route.post(
   "/create-student",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   upload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     req.body = JSON.parse(req.body.data);
@@ -29,26 +29,42 @@ route.post(
 
 route.post(
   "/create-faculty",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
+  upload.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(facultyValidations.zodCreateFacultyValidationSchema),
   userControllers.createFaculty,
 );
 
 route.post(
   "/create-admin",
+  auth(USER_ROLE.super_admin),
+  upload.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(adminValidations.zodCreateAdminValidationSchema),
   userControllers.createAdmin,
 );
 
 route.get(
   "/me",
-  auth(USER_ROLE.student, USER_ROLE.admin, USER_ROLE.faculty),
+  auth(
+    USER_ROLE.super_admin,
+    USER_ROLE.student,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+  ),
   userControllers.getMe,
 );
 
 route.post(
   "/change-status/:id",
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   validateRequest(userValidations.zodUserStatusValidationSchema),
   userControllers.changeStatus,
 );
