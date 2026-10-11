@@ -51,8 +51,6 @@ export const personValidationSchema = {
   permanentAddress: z.string({
     error: "permanent address is required.",
   }),
-  profileImage: z.string({
-    error: "profile image is required.",
-  }),
+  profileImage: z.string().optional(),
   bloodGroup: zodBloodGroupSchema.optional(),
 };

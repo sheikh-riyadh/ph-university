@@ -27,6 +27,7 @@ export interface IStudent extends IBaseUser {
   localGuardian: TLocalGuardian;
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
+  academicFaculty: Types.ObjectId;
 }
 
 export interface IStudentQuery {

@@ -93,7 +93,7 @@ const deleteStudentFromDB = async (id: string) => {
         isDeleted: true,
       },
       {
-        returnDocument: "after",
+        new: true,
         session,
       },
     );
@@ -104,7 +104,7 @@ const deleteStudentFromDB = async (id: string) => {
     const deletedStudent = await Student.findOneAndUpdate(
       { user: deletedUser._id },
       { isDeleted: true },
-      { returnDocument: "after", session },
+      { new: true, session },
     );
 
     if (!deletedStudent) {

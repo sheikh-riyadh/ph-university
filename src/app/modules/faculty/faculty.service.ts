@@ -71,7 +71,7 @@ const deleteFacultyFromDB = async (id: string) => {
     const deletedFaculty = await Faculty.findOneAndUpdate(
       { user: deletedUser._id },
       { isDeleted: true },
-      { returnDocument: "after", session },
+      { new: true, session },
     );
 
     if (!deletedFaculty) {

@@ -72,7 +72,7 @@ const deleteAdminFromDB = async (id: string) => {
         isDeleted: true,
       },
       {
-        returnDocument: "after",
+        new: true,
         session,
       },
     );

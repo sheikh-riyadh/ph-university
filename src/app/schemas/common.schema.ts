@@ -72,6 +72,7 @@ export const basePersonSchema = {
   },
   profileImage: {
     type: String,
+    default: "",
   },
   isDeleted: {
     type: Boolean,

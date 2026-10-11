@@ -87,7 +87,7 @@ const assignFacultiesWithCourseIntoDB = async (
     },
     {
       upsert: true,
-      returnDocument: "after",
+      new: true,
     },
   );
 

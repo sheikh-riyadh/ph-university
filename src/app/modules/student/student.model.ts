@@ -87,6 +87,10 @@ const studentSchema = new Schema<IStudent, StudentModelType>(
       type: Schema.Types.ObjectId,
       ref: "AcademicDepartment",
     },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicFaculty",
+    },
   },
   {
     timestamps: true,
@@ -103,16 +107,6 @@ studentSchema.static("isStudentExists", async function (id: string) {
   }
 
   return isExists;
-});
-
-studentSchema.pre("save", async function () {
-  const isAcademicDepartmentExists = await AcademicDepartment.exists({
-    _id: this.academicDepartment,
-  });
-
-  if (!isAcademicDepartmentExists) {
-    throw new AppError(404, "academic department not found !");
-  }
 });
 
 studentSchema.pre("findOneAndUpdate", async function () {

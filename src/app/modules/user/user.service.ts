@@ -15,6 +15,7 @@ import { generateAdminID } from "../admin/admin.utils";
 import { Admin } from "../admin/admin.model";
 import { USER_ROLE } from "./user.constant";
 import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
+import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 
 const createStudentIntoDB = async (
   file: Record<string, unknown>,
@@ -24,6 +25,15 @@ const createStudentIntoDB = async (
   const academicSemester = await AcademicSemester.isAcademicSemesterExists(
     payload.admissionSemester,
   );
+
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(404, "academic department not found !");
+  }
+
   const session = await mongoose.startSession();
 
   try {
@@ -38,14 +48,6 @@ const createStudentIntoDB = async (
       email: payload.email,
     };
 
-    const imageName = `${studentId}_${payload.name.firstName}`;
-
-    // send image to cloudinary
-    const { secure_url } = await sendImageToCloudinary(
-      file?.path as string,
-      imageName as string,
-    );
-
     // create a user transaction-1
     const newUser = (await User.create([userData], { session })).at(0);
 
@@ -57,8 +59,18 @@ const createStudentIntoDB = async (
       ...payload,
       id: newUser.id,
       user: newUser._id,
-      profileImage: secure_url,
+      academicFaculty: academicDepartment.academicFaculty,
     };
+
+    if (file) {
+      const imageName = `${studentId}_${payload.name.firstName}`;
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(
+        file?.path as string,
+        imageName as string,
+      );
+      studentData.profileImage = secure_url;
+    }
 
     // Create student transaction-2
     const newStudent = await Student.create([studentData], { session });
