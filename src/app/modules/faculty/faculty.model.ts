@@ -27,25 +27,6 @@ const facultySchema = new Schema<IFaculty>(
   },
 );
 
-facultySchema.pre("save", async function () {
-  const isAcademicFacultyExists = await AcademicFaculty.isAcademicFacultExists(
-    this.academicFaculty,
-  );
-
-  const isAcademicDepartmentExists =
-    await AcademicDepartment.isAcademicDepartmentExists(
-      this.academicDepartment,
-    );
-
-  if (!isAcademicFacultyExists) {
-    throw new AppError(404, "academic faculty not found !");
-  }
-
-  if (!isAcademicDepartmentExists) {
-    throw new AppError(404, "academic department not found !");
-  }
-});
-
 facultySchema.pre("findOneAndUpdate", async function () {
   const query = this.getQuery();
   const payload = this.getUpdate() as Partial<IFaculty>;

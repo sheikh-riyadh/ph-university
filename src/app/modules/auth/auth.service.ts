@@ -90,7 +90,7 @@ const changePasswordFromDB = async (
   user.passwordChangedAt = new Date();
 
   const result = await User.findByIdAndUpdate(user._id, user, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };

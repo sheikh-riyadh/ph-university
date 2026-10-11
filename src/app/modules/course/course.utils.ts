@@ -27,7 +27,6 @@ export const updatePreRequisiteCourse = async (
       },
       {
         new: true,
-        returnDocument: "after",
         session,
       },
     );
@@ -49,7 +48,6 @@ export const updatePreRequisiteCourse = async (
       },
       {
         new: true,
-        returnDocument: "after",
         session,
       },
     );

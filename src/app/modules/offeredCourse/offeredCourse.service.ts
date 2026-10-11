@@ -166,7 +166,7 @@ const updateOfferedCourseFromDB = async (
   }
 
   const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };

@@ -10,6 +10,7 @@ const createStudent = catchAsync(async (req, res) => {
     password,
     student,
   );
+
   res.status(201).json({
     success: true,
     message: "User created successfully",

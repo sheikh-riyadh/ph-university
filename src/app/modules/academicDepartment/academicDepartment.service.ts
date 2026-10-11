@@ -45,7 +45,7 @@ const updateAcademicDepartmentFromDB = async (
   payload: Partial<IAcademicDepartment>,
 ) => {
   const result = await AcademicDepartment.findByIdAndUpdate(id, payload, {
-    returnDocument: "after",
+    new: true,
   }).populate("academicFaculty");
 
   return result;

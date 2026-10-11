@@ -8,7 +8,6 @@ import {
 const facultyValidationSchema = z.object({
   ...personValidationSchema,
   designation: z.string(),
-  academicFaculty: z.string(),
   academicDepartment: z.string(),
 });
 

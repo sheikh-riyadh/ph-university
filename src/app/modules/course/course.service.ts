@@ -51,7 +51,7 @@ const updateCourseFromDB = async (id: string, payload: Partial<ICourse>) => {
       id,
       remainingCourseData,
       {
-        returnDocument: "after",
+        new: true,
         session,
       },
     );
@@ -104,7 +104,7 @@ const removeFacultiesFromCourseFromDB = async (
       $pull: { faculties: { $in: payload } },
     },
     {
-      returnDocument: "after",
+      new: true,
     },
   );
 
@@ -119,7 +119,6 @@ const deleteCourseFromDB = async (id: string) => {
     },
     {
       new: true,
-      returnDocument: "after",
     },
   );
 

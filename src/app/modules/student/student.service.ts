@@ -78,7 +78,7 @@ const updateStudentFromDB = async (id: string, payload: Partial<IStudent>) => {
   }
 
   const result = await Student.findByIdAndUpdate(id, modifiedUpdateData, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };

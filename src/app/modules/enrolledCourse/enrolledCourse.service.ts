@@ -208,7 +208,7 @@ const updateEnrolledCourseMarksIntoDB = async (
     enrolledCourse._id,
     modifiedData,
     {
-      returnDocument: "after",
+      new: true,
     },
   );
 

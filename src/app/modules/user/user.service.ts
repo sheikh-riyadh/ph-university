@@ -62,7 +62,7 @@ const createStudentIntoDB = async (
       academicFaculty: academicDepartment.academicFaculty,
     };
 
-    if (file) {
+    if (file?.path) {
       const imageName = `${studentId}_${payload.name.firstName}`;
       // send image to cloudinary
       const { secure_url } = await sendImageToCloudinary(
@@ -94,6 +94,14 @@ const createFacultyIntoDB = async (
   password: string,
   payload: IFaculty,
 ) => {
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(404, "academic department not found !");
+  }
+
   const session = await mongoose.startSession();
 
   try {
@@ -108,8 +116,6 @@ const createFacultyIntoDB = async (
       email: payload.email,
     };
 
-    const imageName = `${facultyId}_${payload.name.firstName}`;
-
     // create a user transaction-1
     const newUser = (await User.create([userData], { session })).at(0);
 
@@ -118,17 +124,23 @@ const createFacultyIntoDB = async (
     }
 
     // send image to cloudinary
-    const { secure_url } = await sendImageToCloudinary(
-      file?.path as string,
-      imageName as string,
-    );
 
     const facultyData: IFaculty = {
       ...payload,
       id: newUser.id,
       user: newUser._id,
-      profileImage: secure_url,
+      academicFaculty: academicDepartment.academicFaculty,
     };
+
+    if (file?.path) {
+      const imageName = `${facultyId}_${payload.name.firstName}`;
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(
+        file?.path as string,
+        imageName as string,
+      );
+      facultyData.profileImage = secure_url;
+    }
 
     // Create a faculty transaction-2
     const newFaculty = await Faculty.create([facultyData], { session });
@@ -165,26 +177,27 @@ const createAdminIntoDB = async (
       email: payload.email,
     };
 
-    const imageName = `${adminId}_${payload.name.firstName}`;
-
     const newUser = (await User.create([userData], { session })).at(0);
 
     if (!newUser) {
       throw new AppError(400, "Failed to create user !");
     }
 
-    // send image to cloudinary
-    const { secure_url } = await sendImageToCloudinary(
-      file?.path as string,
-      imageName as string,
-    );
-
     const adminData: IAdmin = {
       ...payload,
       user: newUser._id,
       id: newUser.id,
-      profileImage: secure_url,
     };
+
+    if (file?.path) {
+      const imageName = `${adminId}_${payload.name.firstName}`;
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(
+        file?.path as string,
+        imageName as string,
+      );
+      adminData.profileImage = secure_url;
+    }
 
     const newAdmin = await Admin.create([adminData], { session });
 
@@ -223,11 +236,7 @@ const getMeFromDB = async ({ role, userId }: IJwtPayload) => {
 };
 
 const changeStatusFromDB = async (status: string, id: string) => {
-  const result = await User.findByIdAndUpdate(
-    id,
-    { status },
-    { returnDocument: "after" },
-  );
+  const result = await User.findByIdAndUpdate(id, { status }, { new: true });
 
   if (!result) {
     throw new AppError(404, "user not found !");

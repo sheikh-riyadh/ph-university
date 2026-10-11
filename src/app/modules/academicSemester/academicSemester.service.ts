@@ -87,7 +87,7 @@ const updateAcademicSemesterFromDB = async (
   }
 
   const result = await AcademicSemester.findByIdAndUpdate(id, payload, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };

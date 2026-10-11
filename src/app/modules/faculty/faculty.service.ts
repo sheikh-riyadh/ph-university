@@ -48,7 +48,7 @@ const updateFacultyFromDB = async (id: string, payload: Partial<IFaculty>) => {
   }
 
   const result = await Faculty.findByIdAndUpdate(id, modifiedUpdateData, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };
@@ -61,7 +61,7 @@ const deleteFacultyFromDB = async (id: string) => {
     const deletedUser = await User.findByIdAndUpdate(
       id,
       { isDeleted: true },
-      { returnDocument: "after", session },
+      { new: true, session },
     );
 
     if (!deletedUser) {

@@ -35,7 +35,7 @@ const updateSingleAcademicFacultyFromDB = async (
   payload: Partial<IAcademicFaculty>,
 ) => {
   const result = await AcademicFaculty.findByIdAndUpdate(id, payload, {
-    returnDocument: "after",
+    new: true,
   });
   return result;
 };
