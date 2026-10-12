@@ -20,6 +20,12 @@ router.get("/", academicSemesterControllers.getAllAcademicSemesters);
 
 router.get(
   "/:id",
+  auth(
+    USER_ROLE.super_admin,
+    USER_ROLE.admin,
+    USER_ROLE.student,
+    USER_ROLE.faculty,
+  ),
   validateRequest(
     academicSemesterValidations.zodAcademicSemesterIdValidationSchema,
   ),
@@ -28,6 +34,13 @@ router.get(
 
 router.patch(
   "/:id",
+  auth(
+    USER_ROLE.super_admin,
+    USER_ROLE.admin,
+    USER_ROLE.student,
+    USER_ROLE.faculty,
+  ),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin),
   validateRequest(
     academicSemesterValidations.zodUpdateAcademicSemesterValidationSchema,
   ),

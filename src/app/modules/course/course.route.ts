@@ -25,6 +25,18 @@ router.get(
 );
 
 router.get(
+  "/:id/get-faculties",
+  auth(
+    USER_ROLE.super_admin,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
+  validateRequest(courseValidations.zodCourseIdValidationSchema),
+  courseControllers.getFacultiesIntoCourse,
+);
+
+router.get(
   "/:id",
   auth(
     USER_ROLE.super_admin,

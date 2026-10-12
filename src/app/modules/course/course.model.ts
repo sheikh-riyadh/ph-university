@@ -18,6 +18,7 @@ const preRequisiteCoursesSchema = new Schema<IPreRequisiteCourses>(
   },
   {
     _id: false,
+    versionKey: false,
   },
 );
 

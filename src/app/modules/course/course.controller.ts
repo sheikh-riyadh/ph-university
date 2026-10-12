@@ -10,21 +10,33 @@ const createCourse = catchAsync(async (req, res) => {
   });
 });
 
+const getAllCourses = catchAsync(async (req, res) => {
+  const result = await courseServices.getAllCoursesFromDB(req.query);
+  res.status(200).json({
+    success: true,
+    message: "All courses retrived successfully",
+    data: result,
+  });
+});
+
+const getFacultiesIntoCourse = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await courseServices.getFacultiesIntoCourseFromDB(
+    id as string,
+  );
+  res.status(200).json({
+    success: true,
+    message: "faculties retrived successfully",
+    data: result,
+  });
+});
+
 const getSingleCourse = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await courseServices.getSingleCourseFromDB(id as string);
   res.status(200).json({
     success: true,
     message: "Single course retrived successfully",
-    data: result,
-  });
-});
-
-const getAllCourses = catchAsync(async (req, res) => {
-  const result = await courseServices.getAllCoursesFromDB(req.query);
-  res.status(200).json({
-    success: true,
-    message: "All courses retrived successfully",
     data: result,
   });
 });
@@ -84,6 +96,7 @@ export const courseControllers = {
   createCourse,
   getSingleCourse,
   getAllCourses,
+  getFacultiesIntoCourse,
   updateCourse,
   deleteCourse,
   assignFacultiesWithCourse,

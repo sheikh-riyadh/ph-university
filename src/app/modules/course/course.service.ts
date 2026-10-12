@@ -31,6 +31,18 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
   return { result, meta };
 };
 
+const getFacultiesIntoCourseFromDB = async (id: string) => {
+  const result = await CourseFaculty.findOne({
+    course: id,
+  }).populate("faculties");
+
+  if (!result) {
+    throw new AppError(404, "course not found !");
+  }
+
+  return result;
+};
+
 const getSingleCourseFromDB = async (id: string) => {
   const result = await Course.findById(id).populate(
     "preRequisiteCourses.course",
@@ -128,6 +140,7 @@ const deleteCourseFromDB = async (id: string) => {
 export const courseServices = {
   createCourseIntoDB,
   getAllCoursesFromDB,
+  getFacultiesIntoCourseFromDB,
   getSingleCourseFromDB,
   updateCourseFromDB,
   deleteCourseFromDB,
