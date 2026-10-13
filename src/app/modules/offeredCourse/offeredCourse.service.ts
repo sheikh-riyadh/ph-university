@@ -7,6 +7,7 @@ import { Faculty } from "../faculty/faculty.model";
 import { SEMESTER_REGISTRATION_STATUS } from "../semesterRegistration/semesterRegistration.constant";
 import { SemesterRegistration } from "../semesterRegistration/semesterRegistration.model";
 import { allowedSearchableFields } from "../student/student.constant";
+import { Student } from "../student/student.model";
 import {
   allowedOfferCourseFilterFields,
   excludedOfferedCourseFields,
@@ -119,6 +120,54 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
   return result;
 };
 
+const getMyOfferedCourseFromDB = async (studentId: string) => {
+  const student = await Student.findOne({
+    id: studentId,
+  }).select("academicDepartment academicFaculty");
+
+  if (!student) {
+    throw new AppError(404, "student not found !");
+  }
+
+  const currentOnGoingRegistrationSemester = await SemesterRegistration.findOne(
+    {
+      status: SEMESTER_REGISTRATION_STATUS.ONGOING,
+    },
+  );
+
+  if (!currentOnGoingRegistrationSemester) {
+    throw new AppError(404, "There is no on-going semester registration");
+  }
+
+  const result = await OfferedCourse.aggregate([
+    {
+      $match: {
+        semesterRegistration: currentOnGoingRegistrationSemester._id,
+        academicFaculty: student.academicFaculty,
+        academicDepartment: student.academicDepartment,
+      },
+    },
+    {
+      $lookup: {
+        from: "courses",
+        localField: "course",
+        foreignField: "_id",
+        as: "course",
+      },
+    },
+    {
+      $unwind: "$course",
+    },
+    {
+      $lookup:{
+        
+      }
+    }
+  ]);
+
+  return result;
+};
+
 const updateOfferedCourseFromDB = async (
   id: string,
   payload: Pick<
@@ -196,6 +245,7 @@ export const offeredCourseServices = {
   createOfferedCourseIntoDB,
   getAllOfferedCourseFromDB,
   getSingleOfferedCourseFromDB,
+  getMyOfferedCourseFromDB,
   updateOfferedCourseFromDB,
   deleteOfferedCourseFromDB,
 };

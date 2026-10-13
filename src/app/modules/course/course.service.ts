@@ -34,7 +34,12 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
 const getFacultiesIntoCourseFromDB = async (id: string) => {
   const result = await CourseFaculty.findOne({
     course: id,
-  }).populate("faculties");
+  })
+    .select("_id faculties")
+    .populate({
+      path: "faculties",
+      select: "name profileImage",
+    });
 
   if (!result) {
     throw new AppError(404, "course not found !");

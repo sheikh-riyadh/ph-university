@@ -39,7 +39,6 @@ const offeredCourseSchema = new Schema<IOfferedCourse>(
     },
     section: {
       type: Number,
-      unique: true,
       required: true,
     },
     days: [

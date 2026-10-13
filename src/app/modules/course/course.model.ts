@@ -81,10 +81,12 @@ const assignFacultiesWithCourseSchema = new Schema<IAssignFacultiesWithCourse>({
     required: true,
     unique: true,
   },
-  faculties: Array<{
-    type: Schema.Types.ObjectId;
-    ref: "Faculty";
-  }>,
+  faculties: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Faculty",
+    },
+  ],
 });
 
 export const CourseFaculty = model<IAssignFacultiesWithCourse>(

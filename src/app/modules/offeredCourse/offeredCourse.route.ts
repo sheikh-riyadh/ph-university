@@ -18,13 +18,14 @@ router.post(
 
 router.get(
   "/",
-  auth(
-    USER_ROLE.super_admin,
-    USER_ROLE.admin,
-    USER_ROLE.student,
-    USER_ROLE.faculty,
-  ),
+  auth(USER_ROLE.super_admin, USER_ROLE.admin, USER_ROLE.faculty),
   offeredCourseControllers.getAllOfferedCourses,
+);
+
+router.get(
+  "/my-offered-courses",
+  auth(USER_ROLE.student),
+  offeredCourseControllers.getMyOfferedCourses,
 );
 
 router.get(

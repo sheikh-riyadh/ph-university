@@ -49,6 +49,7 @@ export const auth = (...requiredRole: TRole[]) => {
       throw new AppError(401, "Unauthorized access !!!");
     }
     req.user = decoded;
+
     next();
   });
 };
