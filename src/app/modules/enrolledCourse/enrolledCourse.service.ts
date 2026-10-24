@@ -185,10 +185,7 @@ const updateEnrolledCourseMarksIntoDB = async (
       enrolledCourse.courseMarks as IEnrolledCourseMarks;
 
     const totalMarks = Math.ceil(
-      classTest1 * 0.1 +
-        midTerm * 0.3 +
-        classTest2 * 0.1 +
-        payload.courseMarks?.final * 0.5,
+      classTest1 + midTerm + classTest2 + payload.courseMarks?.final,
     );
 
     const { grade, gradePoint } = calculateGradeAndPoints(totalMarks);
