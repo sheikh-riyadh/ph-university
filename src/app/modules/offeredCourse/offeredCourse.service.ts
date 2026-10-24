@@ -123,7 +123,7 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
 const getMyOfferedCourseFromDB = async (studentId: string) => {
   const student = await Student.findOne({
     id: studentId,
-  }).select("academicDepartment academicFaculty");
+  }).select("academicDepartment academicFaculty _id");
 
   if (!student) {
     throw new AppError(404, "student not found !");
@@ -159,10 +159,54 @@ const getMyOfferedCourseFromDB = async (studentId: string) => {
       $unwind: "$course",
     },
     {
-      $lookup:{
-        
-      }
-    }
+      $lookup: {
+        from: "enrolledcourses",
+        let: {
+          currentOnGoingRegistrationSemester:
+            currentOnGoingRegistrationSemester._id,
+          currentStudent: student._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      "$semesterRegistration",
+                      "$$currentOnGoingRegistrationSemester",
+                    ],
+                  },
+                  {
+                    $eq: ["$student", "$$currentStudent"],
+                  },
+                  {
+                    $eq: ["$isEnrolled", true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: "enrolledCourses",
+      },
+    },
+    {
+      $addFields: {
+        isAlreadyEnrolled: {
+          $in: [
+            "$course._id",
+            {
+              $map: {
+                input: "$enrolledCourses",
+                as: "enrolled",
+                in: "$$enrolled.course",
+              },
+            },
+          ],
+        },
+      },
+    },
   ]);
 
   return result;
