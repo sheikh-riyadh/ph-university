@@ -19,7 +19,8 @@ const getAllAcademicFaculties = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Academic faculties retrived successfully",
-    data: result,
+    data: result.result,
+    meta: result.meta,
   });
 });
 

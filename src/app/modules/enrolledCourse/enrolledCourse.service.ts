@@ -138,6 +138,22 @@ const createEnrolledCourseIntoDB = async (
   }
 };
 
+const getMyEnrolledCoursesFromDB = async (studentId: string) => {
+  const student = await Student.findOne({
+    id: studentId,
+  });
+
+  if (!student) {
+    throw new AppError(404, "student not found !");
+  }
+
+  const result = await EnrolledCourse.find({
+    student: student._id,
+  });
+
+  return result;
+};
+
 const updateEnrolledCourseMarksIntoDB = async (
   faculty: IJwtPayload,
   payload: Pick<
@@ -214,5 +230,6 @@ const updateEnrolledCourseMarksIntoDB = async (
 
 export const enrolledCourseServices = {
   createEnrolledCourseIntoDB,
+  getMyEnrolledCoursesFromDB,
   updateEnrolledCourseMarksIntoDB,
 };

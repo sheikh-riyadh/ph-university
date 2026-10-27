@@ -120,7 +120,14 @@ const getSingleOfferedCourseFromDB = async (id: string) => {
   return result;
 };
 
-const getMyOfferedCourseFromDB = async (studentId: string) => {
+const getMyOfferedCourseFromDB = async (
+  studentId: string,
+  query: Record<string, unknown>,
+) => {
+  const page = Number(query?.page) || 1;
+  const limit = Number(query?.limit) || 10;
+  const skip = (page - 1) * limit;
+
   const student = await Student.findOne({
     id: studentId,
   }).select("academicDepartment academicFaculty _id");
@@ -139,7 +146,7 @@ const getMyOfferedCourseFromDB = async (studentId: string) => {
     throw new AppError(404, "There is no on-going semester registration");
   }
 
-  const result = await OfferedCourse.aggregate([
+  const aggregationQuery = [
     {
       $match: {
         semesterRegistration: currentOnGoingRegistrationSemester._id,
@@ -229,6 +236,19 @@ const getMyOfferedCourseFromDB = async (studentId: string) => {
     },
     {
       $addFields: {
+        isPreRequisitesFulFilled: {
+          $or: [
+            {
+              $eq: ["$course.preRequisiteCourses", []],
+            },
+            {
+              $setIsSubset: [
+                "$course.preRequisiteCourses.course",
+                "$completedCourseIds",
+              ],
+            },
+          ],
+        },
         isAlreadyEnrolled: {
           $in: [
             "$course._id",
@@ -246,11 +266,37 @@ const getMyOfferedCourseFromDB = async (studentId: string) => {
     {
       $match: {
         isAlreadyEnrolled: false,
+        isPreRequisitesFulFilled: true,
       },
     },
+  ];
+
+  const paginationQuery = [
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+  ];
+
+  const result = await OfferedCourse.aggregate([
+    ...aggregationQuery,
+    ...paginationQuery,
   ]);
 
-  return result;
+  const total = (await OfferedCourse.aggregate([...aggregationQuery])).length;
+  const totalPage = Math.ceil(total / limit);
+
+  return {
+    meta: {
+      total,
+      limit,
+      page,
+      totalPage,
+    },
+    result,
+  };
 };
 
 const updateOfferedCourseFromDB = async (
