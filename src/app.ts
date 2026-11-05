@@ -11,7 +11,7 @@ export const app: Application = express();
 
 // MIDDLEWARE
 app.use(express.json());
-app.use(cors({ origin: [config.front_end_url] }));
+app.use(cors({ origin: [config.front_end_url], credentials: true }));
 app.use(cookieParser());
 
 // Application routes
