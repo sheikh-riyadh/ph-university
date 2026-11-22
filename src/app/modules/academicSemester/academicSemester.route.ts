@@ -16,7 +16,7 @@ router.post(
   academicSemesterControllers.createAcademicSemester,
 );
 
-router.get("/", academicSemesterControllers.getAllAcademicSemesters);
+router.get("/", auth(USER_ROLE.admin), academicSemesterControllers.getAllAcademicSemesters);
 
 router.get(
   "/:id",
